@@ -59,7 +59,6 @@ public final class LinuxTerminal extends Terminal {
 						ids
 							.get(microphone)
 							.add(id);
-						System.out.println("IN" + id);
 					}
 				}
 			});
