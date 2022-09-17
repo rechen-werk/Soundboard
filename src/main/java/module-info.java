@@ -6,6 +6,7 @@ module eu.rechenwerk.soundboard.soundboard {
 
 	opens eu.rechenwerk.soundboard to javafx.fxml;
 	exports eu.rechenwerk.soundboard;
+	exports eu.rechenwerk.soundboard.model;
 	exports eu.rechenwerk.soundboard.controller;
 	opens eu.rechenwerk.soundboard.controller to javafx.fxml;
 }
