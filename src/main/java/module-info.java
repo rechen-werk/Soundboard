@@ -3,6 +3,7 @@ module eu.rechenwerk.soundboard.soundboard {
 	requires javafx.fxml;
 	requires javafx.web;
 	requires commons.exec;
+	requires org.json;
 
 	opens eu.rechenwerk.soundboard to javafx.fxml;
 	exports eu.rechenwerk.soundboard;

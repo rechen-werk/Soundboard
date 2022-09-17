@@ -1,0 +1,17 @@
+{
+  "sounds": "sounds",
+  "microphones": [
+    {
+      "name": "One",
+      "device": "alsa_input.usb-Trust_USB_microphone_Trust_USB_microphone_20191101-00.mono-fallback:capture_MONO"
+    },
+    {
+      "name": "Two",
+      "device": "alsa_input.usb-Trust_USB_microphone_Trust_USB_microphone_20191101-00.mono-fallback:capture_MONO"
+    },
+    {
+      "name": "Three",
+      "device": "alsa_input.usb-Trust_USB_microphone_Trust_USB_microphone_20191101-00.mono-fallback:capture_MONO"
+    }
+  ]
+}

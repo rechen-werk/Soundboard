@@ -12,7 +12,7 @@ import static java.lang.Long.MAX_VALUE;
 
 public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 
-	private boolean isLocked = false;
+	private boolean isLocked;
 	private final static String unlocked = "\uD83D\uDD13";
 	private final static String locked = "\uD83D\uDD12";
 	private final VirtualMicrophone microphone;
@@ -21,22 +21,23 @@ public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 	private final Button button;
 
 
-	public MicrophoneCell(VirtualMicrophone microphone) {
+	public MicrophoneCell(VirtualMicrophone microphone, boolean isLocked) {
 		super();
 		this.microphone = microphone;
+		this.isLocked = isLocked;
 
 		hbox = new HBox();
 		Pane pane = new Pane();
 		label = new Label(microphone.getName());
-		button = new Button(unlocked);
+		button = new Button(this.isLocked ? locked : unlocked);
 		hbox.getChildren().addAll(label, pane, button);
 		HBox.setHgrow(pane, Priority.ALWAYS);
 		pane.setMaxSize(MAX_VALUE, USE_PREF_SIZE);
 		button.setOnAction(event ->{
-			button.setText(isLocked
+			button.setText(this.isLocked
 				? unlocked
 				: locked);
-			isLocked = !isLocked;
+			this.isLocked = !this.isLocked;
 		});
 		updateItem(microphone, false);
 	}

@@ -8,12 +8,14 @@ public final class VirtualMicrophone {
 	public static String INPUT = "-INPUT";
 	public static String SINK = "-SINK";
 	private final String name;
+	private final String device;
 	private final Terminal terminal;
 
 	private Process runningSoundProcess;
 
 	private VirtualMicrophone(String name, String other) throws OsNotSupportedException {
 		this.name = name;
+		this.device = other;
 		terminal = Terminal.getInstance();
 		terminal.addMicrophone(this, other);
 	}
@@ -56,5 +58,9 @@ public final class VirtualMicrophone {
 
 	public String getInputName() {
 		return name + INPUT;
+	}
+
+	public String getDevice() {
+		return device;
 	}
 }

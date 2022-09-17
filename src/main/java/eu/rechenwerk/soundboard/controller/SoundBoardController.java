@@ -12,11 +12,21 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
-import java.io.File;
+
+import java.io.*;
 import java.util.List;
 
 public class SoundBoardController {
+	public final static String CONFIG_FILE = "config.json";
+	public final static String SOUNDS = "sounds";
+	public final static String MICROPHONES = "microphones";
+	public final static String NAME = "name";
+	public final static String DEVICE = "device";
+	private String soundDir;
 	@FXML private TextField soundNameField;
 	@FXML private TextField soundImageField;
 	@FXML private TextField soundFileField;
@@ -24,19 +34,59 @@ public class SoundBoardController {
 	@FXML private ComboBox<String> inputDevicesComboBox;
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 
-	public void init(Stage stage) {
+	public void init(Stage stage) throws OsNotSupportedException {
 
+		InputStream is = getClass().getClassLoader().getResourceAsStream(CONFIG_FILE);
+		if (is == null) {
+			throw new NullPointerException("Cannot find resource file " + CONFIG_FILE);
+		}
 
-		stage.setOnCloseRequest(event ->
+		JSONObject object = new JSONObject(new JSONTokener(is));
+		soundDir = object.getString(SOUNDS);
+
+		JSONArray microphones = object.getJSONArray(MICROPHONES);
+		for (Object obj: microphones) {
+
+			microphoneListView
+				.getItems()
+				.add(
+					new MicrophoneCell(VirtualMicrophone
+						.create(((JSONObject)obj).getString(NAME),
+							((JSONObject)obj).getString(DEVICE)
+						),
+						true)
+				);
+		}
+
+		stage.setOnCloseRequest(event -> {
+			JSONObject state = new JSONObject();
+			state.put(SOUNDS, soundDir);
+			JSONArray microState = new JSONArray();
+			state.put(MICROPHONES, microState);
 			microphoneListView
 			.getItems()
 			.forEach(it ->
 				{
 					if(it.isLocked()) {
-						persist(it.getMicrophone());
+						JSONObject mic = new JSONObject();
+						mic.put(NAME, it.getMicrophone().getName());
+						mic.put(DEVICE, it.getMicrophone().getDevice());
+						microState.put(mic);
 					}
 					it.getMicrophone().delete();
-				}));
+				});
+			PrintWriter writer;
+			try {
+				String f = getClass().getClassLoader().getResource(CONFIG_FILE).getFile();
+				System.out.println(f);
+				writer = new PrintWriter(new FileOutputStream(f));
+			} catch (FileNotFoundException e) {
+				throw new NullPointerException("Cannot find resource file " + CONFIG_FILE);
+			}
+			state.write(writer, 4, 0);
+			writer.flush();
+			writer.close();
+		});
 	}
 
 	@FXML protected void onAddSoundClick() {
@@ -53,7 +103,9 @@ public class SoundBoardController {
 			.add(
 				new MicrophoneCell(VirtualMicrophone.create(
 					microphoneName, inputDevicesComboBox.getSelectionModel().getSelectedItem()
-				))
+				),
+				false)
+
 			);
 	}
 
@@ -79,9 +131,4 @@ public class SoundBoardController {
 		List<String> devices = Terminal.getInstance().listOutputDevices();
 		inputDevicesComboBox.setItems(FXCollections.observableList(devices));
 	}
-
-	private void persist(VirtualMicrophone microphone) {
-
-	}
-
 }
