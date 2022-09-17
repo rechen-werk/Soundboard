@@ -13,8 +13,8 @@ public final class VirtualMicrophone {
 	private Process runningSoundProcess;
 
 	private VirtualMicrophone(String name, String other) throws OsNotSupportedException {
-		terminal = Terminal.getInstance();
 		this.name = name;
+		terminal = Terminal.getInstance();
 		terminal.addMicrophone(this, other);
 	}
 
