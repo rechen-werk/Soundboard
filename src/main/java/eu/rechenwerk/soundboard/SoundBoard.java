@@ -1,7 +1,7 @@
 package eu.rechenwerk.soundboard;
 
 import eu.rechenwerk.soundboard.controller.SoundBoardController;
-import eu.rechenwerk.soundboard.model.OsNotSupportedException;
+import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

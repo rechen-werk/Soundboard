@@ -1,6 +1,6 @@
 package eu.rechenwerk.soundboard.controller;
 
-import eu.rechenwerk.soundboard.model.OsNotSupportedException;
+import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.Terminal;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import eu.rechenwerk.soundboard.view.MicrophoneCell;

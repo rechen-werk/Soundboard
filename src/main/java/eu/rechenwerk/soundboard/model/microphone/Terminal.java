@@ -1,6 +1,6 @@
 package eu.rechenwerk.soundboard.model.microphone;
 
-import eu.rechenwerk.soundboard.model.OsNotSupportedException;
+import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
 
 import java.io.File;
 import java.util.List;
