@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+@SuppressWarnings("unused")
 public class IO {
 	public static File getResource(String file) throws FileNotFoundException {
 		URL resource = IO.class.getClassLoader().getResource(file);
@@ -36,6 +37,18 @@ public class IO {
 		writeLines(file, List.of(content));
 	}
 
+	public static void writeResourceLines(String file, List<String> content) throws IOException {
+		writeToFile(getResource(file), content, false);
+	}
+
+	public static void writeResourceLines(String file, String... content) throws IOException {
+		writeLines(getResource(file), List.of(content));
+	}
+
+	public static void writeResource(String file, String content) throws IOException {
+		writeLines(getResource(file), List.of(content));
+	}
+
 	public static void appendLines(File file, List<String> content) throws IOException {
 		writeToFile(file, content, true);
 	}
@@ -48,6 +61,18 @@ public class IO {
 		appendLines(file, List.of(content));
 	}
 
+	public static void appendResourceLines(String file, List<String> content) throws IOException {
+		writeToFile(getResource(file), content, true);
+	}
+
+	public static void appendResource(String file, String content) throws IOException {
+		appendLines(getResource(file), List.of(content));
+	}
+
+	public static void appendResourceLines(String file, String... content) throws IOException {
+		appendLines(getResource(file), List.of(content));
+	}
+
 	public static List<String> readLines(File file) throws IOException {
 		List<String> content = new ArrayList<>();
 		Scanner scanner = new Scanner(file);
@@ -56,6 +81,10 @@ public class IO {
 		}
 		scanner.close();
 		return content;
+	}
+
+	public static List<String> readResourceLines(String file) throws IOException {
+		return readLines(getResource(file));
 	}
 
 	public static String read(File file) throws FileNotFoundException {
@@ -68,6 +97,10 @@ public class IO {
 		}
 		scanner.close();
 		return content.toString();
+	}
+
+	public static String readResource(String file) throws FileNotFoundException {
+		return read(getResource(file));
 	}
 
 }

@@ -10,4 +10,6 @@ module eu.rechenwerk.soundboard.soundboard {
 	exports eu.rechenwerk.soundboard.controller;
 	opens eu.rechenwerk.soundboard.controller to javafx.fxml;
 	exports eu.rechenwerk.soundboard.model.exceptions;
+	exports eu.rechenwerk.soundboard.framework;
+	opens eu.rechenwerk.soundboard.framework to javafx.fxml;
 }

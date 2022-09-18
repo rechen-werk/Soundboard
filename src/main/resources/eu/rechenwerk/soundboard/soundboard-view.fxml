@@ -66,20 +66,20 @@
                            <Label text="Add Sound" />
                            <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" spacing="20.0" VBox.vgrow="ALWAYS">
                               <children>
-                                 <HBox>
+                                 <HBox alignment="CENTER_LEFT">
                                     <children>
                                        <Label alignment="TOP_CENTER" text="Name" />
                                        <TextField fx:id="soundNameField" HBox.hgrow="ALWAYS" />
                                     </children>
                                  </HBox>
-                                 <HBox>
+                                 <HBox alignment="CENTER_LEFT">
                                     <children>
                                        <Label alignment="TOP_CENTER" text="Image" />
                                        <TextField fx:id="soundImageField" HBox.hgrow="ALWAYS" />
                                        <Button mnemonicParsing="false" onAction="#onChooseImageClick" text="Choose file" />
                                     </children>
                                  </HBox>
-                                 <HBox alignment="TOP_CENTER">
+                                 <HBox alignment="CENTER_LEFT">
                                     <children>
                                        <Label text="File">
                                           <padding>
@@ -106,22 +106,29 @@
                      <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
                         <children>
                            <Label text="Create Virtual Microphone" VBox.vgrow="SOMETIMES" />
-                           <VBox maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                           <VBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" spacing="20.0" VBox.vgrow="ALWAYS">
                               <children>
-                                 <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <HBox alignment="CENTER_LEFT">
                                     <children>
                                        <Label text="Name" />
                                        <TextField fx:id="virtualMicrophoneNameField" HBox.hgrow="ALWAYS" />
                                     </children>
                                  </HBox>
-                                 <HBox prefHeight="100.0" prefWidth="200.0">
+                                 <HBox alignment="CENTER_LEFT">
                                     <children>
                                        <Label text="Input Device" />
                                        <ComboBox fx:id="inputDevicesComboBox" maxWidth="1.7976931348623157E308" onMouseClicked="#refreshCombobox" HBox.hgrow="ALWAYS" />
                                     </children>
                                  </HBox>
-                                 <Button mnemonicParsing="false" onAction="#onCreateMicrophoneClick" text="Create" />
-                                 <Button mnemonicParsing="false" text="Open Config file" />
+                                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onCreateMicrophoneClick" text="Create">
+                                    <VBox.margin>
+                                       <Insets left="30.0" right="30.0" />
+                                    </VBox.margin></Button>
+                                 <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Open Config file">
+                                    <VBox.margin>
+                                       <Insets left="30.0" right="30.0" />
+                                    </VBox.margin>
+                                 </Button>
                               </children>
                            </VBox>
                         </children>

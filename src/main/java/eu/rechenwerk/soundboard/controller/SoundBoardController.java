@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
+import static eu.rechenwerk.soundboard.framework.IO.*;
 
 
 import java.io.*;
@@ -34,14 +34,10 @@ public class SoundBoardController {
 	@FXML private ComboBox<String> inputDevicesComboBox;
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 
-	public void init(Stage stage) throws OsNotSupportedException {
+	public void init(Stage stage) throws OsNotSupportedException, FileNotFoundException {
 
-		InputStream is = getClass().getClassLoader().getResourceAsStream(CONFIG_FILE);
-		if (is == null) {
-			throw new NullPointerException("Cannot find resource file " + CONFIG_FILE);
-		}
 
-		JSONObject object = new JSONObject(new JSONTokener(is));
+		JSONObject object = new JSONObject(readResource(CONFIG_FILE));
 		soundDir = object.getString(SOUNDS);
 
 		JSONArray microphones = object.getJSONArray(MICROPHONES);
@@ -64,28 +60,22 @@ public class SoundBoardController {
 			JSONArray microState = new JSONArray();
 			state.put(MICROPHONES, microState);
 			microphoneListView
-			.getItems()
-			.forEach(it ->
-				{
-					if(it.isLocked()) {
-						JSONObject mic = new JSONObject();
-						mic.put(NAME, it.getMicrophone().getName());
-						mic.put(DEVICE, it.getMicrophone().getDevice());
-						microState.put(mic);
-					}
-					it.getMicrophone().delete();
-				});
-			PrintWriter writer;
+				.getItems()
+				.stream()
+				.filter(MicrophoneCell::isLocked)
+				.map(MicrophoneCell::getMicrophone)
+				.forEach(microState::put);
+			microphoneListView
+				.getItems()
+				.stream()
+				.map(MicrophoneCell::getMicrophone)
+				.forEach(VirtualMicrophone::delete);
+
 			try {
-				String f = getClass().getClassLoader().getResource(CONFIG_FILE).getFile();
-				System.out.println(f);
-				writer = new PrintWriter(new FileOutputStream(f));
-			} catch (FileNotFoundException e) {
-				throw new NullPointerException("Cannot find resource file " + CONFIG_FILE);
+				writeResource(CONFIG_FILE, state.toString(4));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
 			}
-			state.write(writer, 4, 0);
-			writer.flush();
-			writer.close();
 		});
 	}
 
