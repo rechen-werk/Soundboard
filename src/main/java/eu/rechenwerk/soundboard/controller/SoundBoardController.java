@@ -3,21 +3,21 @@ package eu.rechenwerk.soundboard.controller;
 import eu.rechenwerk.soundboard.converters.JSONConverter;
 import eu.rechenwerk.soundboard.model.Config;
 import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
-import eu.rechenwerk.soundboard.model.images.GradientGenerator;
 import eu.rechenwerk.soundboard.model.microphone.Terminal;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import eu.rechenwerk.soundboard.view.MicrophoneCell;
+import eu.rechenwerk.soundboard.view.SoundPane;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import static eu.rechenwerk.soundboard.framework.IO.*;
 
-import java.awt.*;
 import java.io.*;
 import java.util.List;
 
@@ -31,6 +31,7 @@ public class SoundBoardController {
 	@FXML private TextField virtualMicrophoneNameField;
 	@FXML private ComboBox<String> inputDevicesComboBox;
 	@FXML private ListView<MicrophoneCell> microphoneListView;
+	@FXML private GridPane soundGridPane;
 
 	public void init(Stage stage) throws FileNotFoundException {
 		Config config = JSONConverter.CONFIG.deserialize(readResource(CONFIG_FILE));
@@ -45,6 +46,12 @@ public class SoundBoardController {
 						new MicrophoneCell(it, true)
 					).toList()
 			);
+		for (int row = 0; row < soundGridPane.getRowCount(); row++) {
+			for (int col = 0; col < soundGridPane.getColumnCount(); col++) {
+				soundGridPane.add(new SoundPane(), row, col);
+			}
+		}
+
 
 		stage.setOnCloseRequest(event -> cleanup());
 	}
@@ -52,12 +59,6 @@ public class SoundBoardController {
 	@FXML protected void onAddSoundClick() {
 		String audioFileString = soundNameField.getText();
 		String audioImageString = soundImageField.getText();
-		try {
-			GradientGenerator.generateImage(500, 500,
-				Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	@FXML protected void onCreateMicrophoneClick() throws OsNotSupportedException {

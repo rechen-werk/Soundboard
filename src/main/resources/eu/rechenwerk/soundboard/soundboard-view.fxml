@@ -26,7 +26,7 @@
                            <Insets bottom="20.0" left="20.0" top="20.0" />
                         </HBox.margin>
                      </Button>
-                     <GridPane alignment="CENTER" gridLinesVisible="true" HBox.hgrow="ALWAYS">
+                     <GridPane fx:id="soundGridPane" alignment="CENTER" gridLinesVisible="true" HBox.hgrow="ALWAYS">
                        <columnConstraints>
                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
