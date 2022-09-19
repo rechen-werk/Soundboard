@@ -1,17 +1,11 @@
 package eu.rechenwerk.soundboard.converters;
 
-import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 public abstract class JSONConverter<T> {
 
-	protected Class<T> persistentClass;
-
-	protected JSONConverter() {
-		persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-	}
-
-	protected abstract String serialize(T obj);
-	protected abstract T deserialize(String json);
+	public abstract String serialize(T obj);
+	public abstract T deserialize(String json);
 
 	protected final String startObject() {
 		return "{";
@@ -22,10 +16,22 @@ public abstract class JSONConverter<T> {
 	}
 
 	protected final String startArray() {
-		return "]";
+		return "[";
 	}
 
 	protected final String endArray() {
 		return "]";
+	}
+	protected final String comma() {
+		return ",";
+	}
+
+	protected final String putString(String label, String item) {
+		return "\"" + label + "\": \"" + item + "\"";
+	}
+	protected final <I> String putArray(String label, List<I> items, JSONConverter<I> listItemConverter) {
+		ListConverter<I, JSONConverter<I>> converter = new ListConverter<>(listItemConverter);
+		return "\"" + label + "\": " + converter.serialize(items);
+
 	}
 }

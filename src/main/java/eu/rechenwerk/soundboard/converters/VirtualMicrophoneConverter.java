@@ -4,16 +4,16 @@ import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import org.json.JSONObject;
 
-final class VirtualMicrophoneConverter extends JSONConverter<VirtualMicrophone> {
+public final class VirtualMicrophoneConverter extends JSONConverter<VirtualMicrophone> {
 	private final static String NAME = "name";
 	private final static String DEVICE = "device";
 
 	@Override
-	protected String serialize(VirtualMicrophone obj) {
+	public String serialize(VirtualMicrophone obj) {
 		return
-			startObject()
-			+"\""+NAME+"\":\"" +obj.getName()+"\"," +
-			"\""+DEVICE+"\":\""+obj.getDevice()+"\""+
+			startObject() +
+			putString(NAME, obj.getName()) + comma() +
+			putString(DEVICE, obj.getDevice()) +
 			endObject();
 	}
 

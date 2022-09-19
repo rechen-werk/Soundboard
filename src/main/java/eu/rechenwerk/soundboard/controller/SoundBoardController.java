@@ -1,5 +1,7 @@
 package eu.rechenwerk.soundboard.controller;
 
+import eu.rechenwerk.soundboard.converters.ConfigConverter;
+import eu.rechenwerk.soundboard.model.Config;
 import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.Terminal;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
@@ -12,7 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import org.json.JSONArray;
+
 import org.json.JSONObject;
 import static eu.rechenwerk.soundboard.framework.IO.*;
 
@@ -22,10 +24,7 @@ import java.util.List;
 
 public class SoundBoardController {
 	public final static String CONFIG_FILE = "config.json";
-	public final static String SOUNDS = "sounds";
-	public final static String MICROPHONES = "microphones";
-	public final static String NAME = "name";
-	public final static String DEVICE = "device";
+
 	private String soundDir;
 	@FXML private TextField soundNameField;
 	@FXML private TextField soundImageField;
@@ -34,37 +33,35 @@ public class SoundBoardController {
 	@FXML private ComboBox<String> inputDevicesComboBox;
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 
-	public void init(Stage stage) throws OsNotSupportedException, FileNotFoundException {
+	public void init(Stage stage) throws FileNotFoundException {
 
 
 		JSONObject object = new JSONObject(readResource(CONFIG_FILE));
-		soundDir = object.getString(SOUNDS);
-
-		JSONArray microphones = object.getJSONArray(MICROPHONES);
-		for (Object obj: microphones) {
-
-			microphoneListView
-				.getItems()
-				.add(
-					new MicrophoneCell(VirtualMicrophone
-						.create(((JSONObject)obj).getString(NAME),
-							((JSONObject)obj).getString(DEVICE)
-						),
-						true)
-				);
-		}
+		Config config = new ConfigConverter().deserialize(object.toString());
+		soundDir = config.sounds();
+		microphoneListView
+			.getItems()
+			.addAll(
+				config
+					.microphones()
+					.stream()
+					.map(it ->
+						new MicrophoneCell(it, true)
+					).toList()
+			);
 
 		stage.setOnCloseRequest(event -> {
-			JSONObject state = new JSONObject();
-			state.put(SOUNDS, soundDir);
-			JSONArray microState = new JSONArray();
-			state.put(MICROPHONES, microState);
-			microphoneListView
+			List<VirtualMicrophone> persist = microphoneListView
 				.getItems()
 				.stream()
 				.filter(MicrophoneCell::isLocked)
 				.map(MicrophoneCell::getMicrophone)
-				.forEach(microState::put);
+				.toList();
+			JSONObject configJSON = new JSONObject(
+				new ConfigConverter().serialize(
+					new Config(soundDir, persist)
+				)
+			);
 			microphoneListView
 				.getItems()
 				.stream()
@@ -72,7 +69,7 @@ public class SoundBoardController {
 				.forEach(VirtualMicrophone::delete);
 
 			try {
-				writeResource(CONFIG_FILE, state.toString(4));
+				writeResource(CONFIG_FILE, configJSON.toString(4));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
