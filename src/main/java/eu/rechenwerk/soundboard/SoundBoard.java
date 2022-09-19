@@ -1,7 +1,6 @@
 package eu.rechenwerk.soundboard;
 
 import eu.rechenwerk.soundboard.controller.SoundBoardController;
-import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,7 +10,7 @@ import java.io.IOException;
 
 public class SoundBoard extends Application {
 	@Override
-	public void start(Stage stage) throws IOException, OsNotSupportedException {
+	public void start(Stage stage) throws IOException {
 		FXMLLoader fxmlLoader = new FXMLLoader(SoundBoard.class.getResource("soundboard-view.fxml"));
 		Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
 		stage.setTitle("Soundboard");

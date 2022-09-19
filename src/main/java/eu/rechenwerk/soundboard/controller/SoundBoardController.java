@@ -3,6 +3,7 @@ package eu.rechenwerk.soundboard.controller;
 import eu.rechenwerk.soundboard.converters.JSONConverter;
 import eu.rechenwerk.soundboard.model.Config;
 import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
+import eu.rechenwerk.soundboard.model.images.GradientGenerator;
 import eu.rechenwerk.soundboard.model.microphone.Terminal;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import eu.rechenwerk.soundboard.view.MicrophoneCell;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 
 import static eu.rechenwerk.soundboard.framework.IO.*;
 
+import java.awt.*;
 import java.io.*;
 import java.util.List;
 
@@ -48,7 +50,14 @@ public class SoundBoardController {
 	}
 
 	@FXML protected void onAddSoundClick() {
-			soundNameField.setText("HI");
+		String audioFileString = soundNameField.getText();
+		String audioImageString = soundImageField.getText();
+		try {
+			GradientGenerator.generateImage(500, 500,
+				Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@FXML protected void onCreateMicrophoneClick() throws OsNotSupportedException {
