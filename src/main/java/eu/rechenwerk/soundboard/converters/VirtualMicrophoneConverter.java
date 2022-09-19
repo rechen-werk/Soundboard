@@ -9,6 +9,8 @@ public final class VirtualMicrophoneConverter extends JSONConverter<VirtualMicro
 	private final static String DEVICE = "device";
 	private final static String VOLUME = "volume";
 
+	VirtualMicrophoneConverter() {}
+
 	@Override
 	public String serialize(VirtualMicrophone obj) {
 		return

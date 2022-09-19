@@ -8,12 +8,14 @@ public class ConfigConverter extends JSONConverter<Config>{
 	private final static String SOUNDS = "sounds";
 	private final static String MICROPHONES = "microphones";
 
+	ConfigConverter() {}
+
 	@Override
 	public String serialize(Config obj) {
 		return
 			startObject() +
 				putString(SOUNDS, obj.sounds()) + comma() +
-				putArray(MICROPHONES, obj.microphones(), new VirtualMicrophoneConverter()) +
+				putArray(MICROPHONES, obj.microphones(), JSONConverter.VIRTUAL_MICROPHONE) +
 			endObject();
 	}
 
@@ -22,7 +24,7 @@ public class ConfigConverter extends JSONConverter<Config>{
 		JSONObject jsonObject = new JSONObject(json);
 		return new Config(
 			jsonObject.getString(SOUNDS),
-			new ListConverter<>(new VirtualMicrophoneConverter()).deserialize(jsonObject.getJSONArray(MICROPHONES).toString())
+			JSONConverter.VIRTUAL_MICROPHONE_LIST.deserialize(jsonObject.getJSONArray(MICROPHONES).toString())
 		);
 	}
 }

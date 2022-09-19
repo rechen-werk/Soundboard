@@ -1,6 +1,6 @@
 package eu.rechenwerk.soundboard.controller;
 
-import eu.rechenwerk.soundboard.converters.ConfigConverter;
+import eu.rechenwerk.soundboard.converters.JSONConverter;
 import eu.rechenwerk.soundboard.model.Config;
 import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.Terminal;
@@ -15,7 +15,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
-import org.json.JSONObject;
 import static eu.rechenwerk.soundboard.framework.IO.*;
 
 
@@ -34,8 +33,7 @@ public class SoundBoardController {
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 
 	public void init(Stage stage) throws FileNotFoundException {
-		JSONObject object = new JSONObject(readResource(CONFIG_FILE));
-		Config config = new ConfigConverter().deserialize(object.toString());
+		Config config = JSONConverter.CONFIG.deserialize(readResource(CONFIG_FILE));
 		sounds = config.sounds();
 		microphoneListView
 			.getItems()
@@ -55,22 +53,16 @@ public class SoundBoardController {
 				.filter(MicrophoneCell::isLocked)
 				.map(MicrophoneCell::getMicrophone)
 				.toList();
-			JSONObject configJSON = new JSONObject(
-				new ConfigConverter().serialize(
-					new Config(sounds, persist)
-				)
-			);
+			try {
+				writeResource(CONFIG_FILE, JSONConverter.CONFIG.serializeIndented(new Config(sounds, persist), 4));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 			microphoneListView
 				.getItems()
 				.stream()
 				.map(MicrophoneCell::getMicrophone)
 				.forEach(VirtualMicrophone::delete);
-
-			try {
-				writeResource(CONFIG_FILE, configJSON.toString(4));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
 		});
 	}
 

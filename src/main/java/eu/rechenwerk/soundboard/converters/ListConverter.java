@@ -10,7 +10,7 @@ public class ListConverter<T, S extends JSONConverter<T>> extends JSONConverter<
 
 	private final JSONConverter<T> converter;
 
-	public ListConverter(S converter) {
+	ListConverter(S converter) {
 		this.converter = converter;
 	}
 
