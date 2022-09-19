@@ -14,9 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-
 import static eu.rechenwerk.soundboard.framework.IO.*;
-
 
 import java.io.*;
 import java.util.List;
@@ -46,24 +44,7 @@ public class SoundBoardController {
 					).toList()
 			);
 
-		stage.setOnCloseRequest(event -> {
-			List<VirtualMicrophone> persist = microphoneListView
-				.getItems()
-				.stream()
-				.filter(MicrophoneCell::isLocked)
-				.map(MicrophoneCell::getMicrophone)
-				.toList();
-			try {
-				writeResource(CONFIG_FILE, JSONConverter.CONFIG.serializeIndented(new Config(sounds, persist), 4));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			microphoneListView
-				.getItems()
-				.stream()
-				.map(MicrophoneCell::getMicrophone)
-				.forEach(VirtualMicrophone::delete);
-		});
+		stage.setOnCloseRequest(event -> cleanup());
 	}
 
 	@FXML protected void onAddSoundClick() {
@@ -82,7 +63,6 @@ public class SoundBoardController {
 					microphoneName, inputDevicesComboBox.getSelectionModel().getSelectedItem()
 				),
 				false)
-
 			);
 	}
 
@@ -107,5 +87,33 @@ public class SoundBoardController {
 	@FXML protected void refreshCombobox() throws OsNotSupportedException {
 		List<String> devices = Terminal.getInstance().listOutputDevices();
 		inputDevicesComboBox.setItems(FXCollections.observableList(devices));
+	}
+
+	private void persist() {
+		try {
+			writeResource(
+				CONFIG_FILE,
+				JSONConverter.CONFIG.serializeIndented(new Config(
+					sounds,
+					microphoneListView
+						.getItems()
+						.stream()
+						.filter(MicrophoneCell::isLocked)
+						.map(MicrophoneCell::getMicrophone)
+						.toList()
+				), 4)
+			);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void cleanup(){
+		persist();
+		microphoneListView
+			.getItems()
+			.stream()
+			.map(MicrophoneCell::getMicrophone)
+			.forEach(VirtualMicrophone::delete);
 	}
 }
