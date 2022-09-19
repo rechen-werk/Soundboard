@@ -25,7 +25,7 @@ import java.util.List;
 public class SoundBoardController {
 	public final static String CONFIG_FILE = "config.json";
 
-	private String soundDir;
+	private String sounds;
 	@FXML private TextField soundNameField;
 	@FXML private TextField soundImageField;
 	@FXML private TextField soundFileField;
@@ -34,11 +34,9 @@ public class SoundBoardController {
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 
 	public void init(Stage stage) throws FileNotFoundException {
-
-
 		JSONObject object = new JSONObject(readResource(CONFIG_FILE));
 		Config config = new ConfigConverter().deserialize(object.toString());
-		soundDir = config.sounds();
+		sounds = config.sounds();
 		microphoneListView
 			.getItems()
 			.addAll(
@@ -59,7 +57,7 @@ public class SoundBoardController {
 				.toList();
 			JSONObject configJSON = new JSONObject(
 				new ConfigConverter().serialize(
-					new Config(soundDir, persist)
+					new Config(sounds, persist)
 				)
 			);
 			microphoneListView

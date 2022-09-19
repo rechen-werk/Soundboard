@@ -11,17 +11,26 @@ public final class VirtualMicrophone {
 	private final String device;
 	private final Terminal terminal;
 
+	private int volume;
+
 	private Process runningSoundProcess;
 
 	private VirtualMicrophone(String name, String other) throws OsNotSupportedException {
 		this.name = name;
 		this.device = other;
+		volume = 100;
 		terminal = Terminal.getInstance();
 		terminal.addMicrophone(this, other);
 	}
 
 	public static VirtualMicrophone create(String name, String other) throws OsNotSupportedException {
 		return new VirtualMicrophone(name, other);
+	}
+
+	public static VirtualMicrophone create(String name, String other, int volume) throws OsNotSupportedException {
+		VirtualMicrophone mic = new VirtualMicrophone(name, other);
+		mic.setVolume(volume);
+		return mic;
 	}
 
 	public void play(File audio) {
@@ -40,6 +49,8 @@ public final class VirtualMicrophone {
 	}
 
 	public void setVolume(int volume) {
+		if(volume < 0 || volume > 100) return;
+		this.volume = volume;
 		terminal.setVolume(volume, this);
 	}
 
@@ -62,5 +73,9 @@ public final class VirtualMicrophone {
 
 	public String getDevice() {
 		return device;
+	}
+
+	public int getVolume() {
+		return volume;
 	}
 }

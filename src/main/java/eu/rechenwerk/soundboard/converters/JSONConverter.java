@@ -29,6 +29,11 @@ public abstract class JSONConverter<T> {
 	protected final String putString(String label, String item) {
 		return "\"" + label + "\": \"" + item + "\"";
 	}
+
+	protected final String putInt(String label, int item) {
+		return "\"" + label + "\": " + item;
+	}
+
 	protected final <I> String putArray(String label, List<I> items, JSONConverter<I> listItemConverter) {
 		ListConverter<I, JSONConverter<I>> converter = new ListConverter<>(listItemConverter);
 		return "\"" + label + "\": " + converter.serialize(items);
