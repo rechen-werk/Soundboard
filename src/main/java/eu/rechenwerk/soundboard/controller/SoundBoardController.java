@@ -20,9 +20,9 @@ import static eu.rechenwerk.soundboard.framework.IO.*;
 
 import java.awt.*;
 import java.io.*;
+import java.net.URL;
+import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 
 public class SoundBoardController {
 	public final static String CONFIG_FILE = "config.json";
@@ -111,7 +111,7 @@ public class SoundBoardController {
 						.filter(MicrophoneCell::isLocked)
 						.map(MicrophoneCell::getMicrophone)
 						.toList(),
-					List.of(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.PINK, Color.orange, Color.CYAN, Color.BLACK, Color.WHITE, Color.MAGENTA)
+					colors
 				), 4)
 			);
 		} catch (IOException e) {
@@ -139,16 +139,30 @@ public class SoundBoardController {
 				gridColors[row][col] = colors.get(new Random().nextInt(colors.size()));
 			}
 		}
-		
+		URL soundsDirURL = getClass().getResource(sounds);
+		if(soundsDirURL == null) throw new RuntimeException("Sounds directory could not be found!");
+		File soundsDir = new File(soundsDirURL.getFile());
+		List<File> audios = Arrays
+			.stream(soundsDir.listFiles())
+			.filter(File::isFile)
+			.filter(file-> file.getName().endsWith(".ogg"))
+			.toList();
+
+		int index = 0;
+
 		for (int row = 0; row < soundGridPane.getRowCount(); row++) {
 			for (int col = 0; col < soundGridPane.getColumnCount(); col++) {
 				soundGridPane.add(new SoundPane(
-						gridColors[row][col],
-						gridColors[row+1][col],
-						gridColors[row][col+1],
-						gridColors[row+1][col+1],
-					Optional.empty())
+					colors.get(new Random().nextInt(colors.size())),
+					gridColors[row+1][col],
+					gridColors[row][col+1],
+					gridColors[row+1][col+1],
+					index < audios.size()
+						? Optional.of(audios.get(index))
+						: Optional.empty(),
+						microphoneListView.getItems().stream().map(MicrophoneCell::getMicrophone).toList())
 					,col, row);
+				index++;
 			}
 		}
 	}

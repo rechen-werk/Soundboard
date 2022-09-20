@@ -1,5 +1,5 @@
 {
-  "sounds": "sounds",
+  "sounds": "/sounds",
   "microphones": [
     {
       "name": "One",
@@ -25,7 +25,6 @@
     {"code": "ffffafaf"},
     {"code": "ffffc800"},
     {"code": "ff00ffff"},
-    {"code": "ffffffff"},
     {"code": "ffff00ff"}
   ]
 }
