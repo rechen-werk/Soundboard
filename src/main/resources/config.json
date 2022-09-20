@@ -16,5 +16,16 @@
       "device": "alsa_input.usb-Trust_USB_microphone_Trust_USB_microphone_20191101-00.mono-fallback:capture_MONO",
       "volume": 100
     }
+  ],
+  "colors": [
+    {"code": "ff0000ff"},
+    {"code": "ffff0000"},
+    {"code": "ffffff00"},
+    {"code": "ff00ff00"},
+    {"code": "ffffafaf"},
+    {"code": "ffffc800"},
+    {"code": "ff00ffff"},
+    {"code": "ffffffff"},
+    {"code": "ffff00ff"}
   ]
 }

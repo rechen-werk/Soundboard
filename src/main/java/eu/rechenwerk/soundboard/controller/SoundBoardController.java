@@ -18,13 +18,17 @@ import javafx.stage.Stage;
 
 import static eu.rechenwerk.soundboard.framework.IO.*;
 
+import java.awt.*;
 import java.io.*;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 public class SoundBoardController {
 	public final static String CONFIG_FILE = "config.json";
-
 	private String sounds;
+	private List<Color> colors;
+
 	@FXML private TextField soundNameField;
 	@FXML private TextField soundImageField;
 	@FXML private TextField soundFileField;
@@ -36,6 +40,7 @@ public class SoundBoardController {
 	public void init(Stage stage) throws FileNotFoundException {
 		Config config = JSONConverter.CONFIG.deserialize(readResource(CONFIG_FILE));
 		sounds = config.sounds();
+		colors = config.colors();
 		microphoneListView
 			.getItems()
 			.addAll(
@@ -46,13 +51,8 @@ public class SoundBoardController {
 						new MicrophoneCell(it, true)
 					).toList()
 			);
-		for (int row = 0; row < soundGridPane.getRowCount(); row++) {
-			for (int col = 0; col < soundGridPane.getColumnCount(); col++) {
-				soundGridPane.add(new SoundPane(), row, col);
-			}
-		}
 
-
+		initAudioBoard();
 		stage.setOnCloseRequest(event -> cleanup());
 	}
 
@@ -110,7 +110,8 @@ public class SoundBoardController {
 						.stream()
 						.filter(MicrophoneCell::isLocked)
 						.map(MicrophoneCell::getMicrophone)
-						.toList()
+						.toList(),
+					List.of(Color.BLUE, Color.RED, Color.YELLOW, Color.GREEN, Color.PINK, Color.orange, Color.CYAN, Color.BLACK, Color.WHITE, Color.MAGENTA)
 				), 4)
 			);
 		} catch (IOException e) {
@@ -125,5 +126,30 @@ public class SoundBoardController {
 			.stream()
 			.map(MicrophoneCell::getMicrophone)
 			.forEach(VirtualMicrophone::delete);
+	}
+
+	private void initAudioBoard() {
+		if(colors.size() == 0) {
+			colors = List.of(Color.WHITE);
+		}
+		Color[][] gridColors = new Color[soundGridPane.getRowCount()+1][soundGridPane.getColumnCount()+1];
+
+		for (int row = 0; row < gridColors.length; row++) {
+			for (int col = 0; col < gridColors[row].length; col++) {
+				gridColors[row][col] = colors.get(new Random().nextInt(colors.size()));
+			}
+		}
+		
+		for (int row = 0; row < soundGridPane.getRowCount(); row++) {
+			for (int col = 0; col < soundGridPane.getColumnCount(); col++) {
+				soundGridPane.add(new SoundPane(
+						gridColors[row][col],
+						gridColors[row+1][col],
+						gridColors[row][col+1],
+						gridColors[row+1][col+1],
+					Optional.empty())
+					,col, row);
+			}
+		}
 	}
 }

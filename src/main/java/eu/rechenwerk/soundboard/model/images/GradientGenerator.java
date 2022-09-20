@@ -6,8 +6,8 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.Color;
 import java.io.IOException;
 import java.net.URL;
 
@@ -51,6 +51,12 @@ public class GradientGenerator {
 				image.setRGB(x, y, rgb);
 			}
 		}
+		Graphics g = image.getGraphics();
+		g.setColor(Color.BLACK);
+		g.fillRect(0,0,width/150, height);
+		g.fillRect(0,0,width, height/150);
+		g.fillRect(width-width/150,0,width/150, height);
+		g.fillRect(0,height-height/150,width, height/150);
 		return image;
 	}
 

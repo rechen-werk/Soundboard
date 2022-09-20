@@ -7,6 +7,7 @@ public class ConfigConverter extends JSONConverter<Config>{
 
 	private final static String SOUNDS = "sounds";
 	private final static String MICROPHONES = "microphones";
+	private final static String COLORS = "colors";
 
 	ConfigConverter() {}
 
@@ -15,7 +16,8 @@ public class ConfigConverter extends JSONConverter<Config>{
 		return
 			startObject() +
 				putString(SOUNDS, obj.sounds()) + comma() +
-				putArray(MICROPHONES, obj.microphones(), JSONConverter.VIRTUAL_MICROPHONE) +
+				putArray(MICROPHONES, obj.microphones(), JSONConverter.VIRTUAL_MICROPHONE) + comma() +
+				putArray(COLORS, obj.colors(), JSONConverter.COLOR) +
 			endObject();
 	}
 
@@ -24,7 +26,8 @@ public class ConfigConverter extends JSONConverter<Config>{
 		JSONObject jsonObject = new JSONObject(json);
 		return new Config(
 			jsonObject.getString(SOUNDS),
-			JSONConverter.VIRTUAL_MICROPHONE_LIST.deserialize(jsonObject.getJSONArray(MICROPHONES).toString())
+			JSONConverter.VIRTUAL_MICROPHONE_LIST.deserialize(jsonObject.getJSONArray(MICROPHONES).toString()),
+			JSONConverter.COLOR_LIST.deserialize(jsonObject.getJSONArray(COLORS).toString())
 		);
 	}
 }

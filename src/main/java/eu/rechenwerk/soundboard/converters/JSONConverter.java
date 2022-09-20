@@ -6,20 +6,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.util.List;
 
 public abstract class JSONConverter<T> {
 
 	public static VirtualMicrophoneConverter VIRTUAL_MICROPHONE;
 	public static ConfigConverter CONFIG;
+	public static ColorConverter COLOR;
 	public static ListConverter<VirtualMicrophone, VirtualMicrophoneConverter> VIRTUAL_MICROPHONE_LIST;
 	public static ListConverter<Config, ConfigConverter> CONFIG_LIST;
+	public static ListConverter<Color, ColorConverter> COLOR_LIST;
 
 	static {
 		VIRTUAL_MICROPHONE = new VirtualMicrophoneConverter();
 		CONFIG = new ConfigConverter();
 		VIRTUAL_MICROPHONE_LIST = new ListConverter<>(VIRTUAL_MICROPHONE);
 		CONFIG_LIST = new ListConverter<>(CONFIG);
+		COLOR = new ColorConverter();
+		COLOR_LIST = new ListConverter<>(COLOR);
 	}
 
 	public abstract String serialize(T obj);
