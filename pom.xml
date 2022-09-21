@@ -75,7 +75,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                eu.rechenwerk.soundboard.soundboard/eu.rechenwerk.soundboard.SoundBoard
+                                eu.rechenwerk.soundboard.soundboard/eu.rechenwerk.soundboard.FXSoundBoard
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
