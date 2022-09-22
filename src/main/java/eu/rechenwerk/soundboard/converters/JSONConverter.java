@@ -7,18 +7,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public abstract class JSONConverter<T> {
-	/**
-	 * Serializes the Object into a string if a Converter for it is implemented.
-	 * @param obj The object to serialize.
-	 * @return A json string representation of the Object.
-	 */
 	public abstract String serialize(T obj);
-
-	/**
-	 * Creates an Object from a json string if a Converter for it is implemented.
-	 * @param json The json string to deserialize.
-	 * @return The Object of Type {@code <T>}
-	 */
 	public abstract T deserialize(String json);
 	protected final String startObject() {
 		return "{";
@@ -52,12 +41,6 @@ public abstract class JSONConverter<T> {
 		return converter.deserialize(json);
 	}
 
-	/**
-	 * Serializes the Object with {@code indent} spaces per layer
-	 * @param obj The object to serialize.
-	 * @param indent the indent per layer
-	 * @return A nicely formatted json string
-	 */
 	public String serializeIndented(T obj, int indent) {
 		try {
 			return new JSONObject(serialize(obj)).toString(indent);

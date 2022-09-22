@@ -12,29 +12,10 @@ import java.io.IOException;
 import java.net.URL;
 
 public class GradientGenerator {
-	/**
-	 * Generates a Image with a gradient between the corners.
-	 * @param width The width of the image
-	 * @param height The height of the image
-	 * @param c0 The color in the top left corner
-	 * @param c1 The color in the bottom left corner
-	 * @param c2 The color in the top right corner
-	 * @param c3 The color in the bottom right corner
-	 * @return The image with gradient
-	 */
 	public static Image generateImage(int width, int height, Color c0, Color c1, Color c2, Color c3) {
 		return convertToFxImage(createGradient(width, height, c0, c1, c2, c3));
 	}
 
-	/**
-	 * Generates a gradient image overlayed with another image.
-	 * @param resourceName name of the resource with the image
-	 * @param c0 The color in the top left corner
-	 * @param c1 The color in the bottom left corner
-	 * @param c2 The color in the top right corner
-	 * @param c3 The color in the bottom right corner
-	 * @return The image with gradient overlayed with the image
-	 */
 	public static Image generateImage(String resourceName, Color c0, Color c1, Color c2, Color c3){
 		BufferedImage speaker;
 		try {
