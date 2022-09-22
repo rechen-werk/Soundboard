@@ -35,6 +35,12 @@ public class SoundBoardController {
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 	@FXML private GridPane soundGridPane;
 
+	/**
+	 * Initialize the SoundBoard window
+	 * @param stage The Stage from the start method
+	 * @throws OsNotSupportedException should not be thrown, because the os is checked at the beginning and already throws a runtime exception then
+	 * @throws IOException if the Config file is missing or something is wrong with it.
+	 */
 	public void init(Stage stage) throws OsNotSupportedException, IOException {
 		try(FileInputStream fis = new FileInputStream(PATH_INFO.getConfigFile())) {
 			String configJson = new String(fis.readAllBytes());
