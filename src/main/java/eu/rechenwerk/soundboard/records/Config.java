@@ -1,4 +1,4 @@
-package eu.rechenwerk.soundboard.model;
+package eu.rechenwerk.soundboard.records;
 
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 
@@ -6,7 +6,6 @@ import java.awt.*;
 import java.util.List;
 
 public record Config(
-	String sounds,
 	List<VirtualMicrophone> microphones,
 	List<Color> colors
-) {}
+){}

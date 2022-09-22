@@ -1,6 +1,6 @@
 package eu.rechenwerk.soundboard.converters;
 
-import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
+import eu.rechenwerk.framework.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import org.json.JSONObject;
 
@@ -8,8 +8,6 @@ public final class VirtualMicrophoneConverter extends JSONConverter<VirtualMicro
 	private final static String NAME = "name";
 	private final static String DEVICE = "device";
 	private final static String VOLUME = "volume";
-
-	VirtualMicrophoneConverter() {}
 
 	@Override
 	public String serialize(VirtualMicrophone obj) {

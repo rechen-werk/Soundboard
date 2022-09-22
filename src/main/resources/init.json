@@ -1,0 +1,21 @@
+{
+  "PATH_INFO":{
+    "COMP_DIR": ".rechenwerk",
+    "APP_DIR": "soundboard",
+    "SOUNDS_DIR": "sounds",
+    "CONFIG_FILE": "config.json"
+  },
+  "CONFIG_CONTENT": {
+    "microphones": [],
+    "colors": [
+      {"code": "ff0000ff"},
+      {"code": "ffff0000"},
+      {"code": "ffffff00"},
+      {"code": "ff00ff00"},
+      {"code": "ffffafaf"},
+      {"code": "ffffc800"},
+      {"code": "ff00ffff"},
+      {"code": "ffff00ff"}
+    ]
+  }
+}

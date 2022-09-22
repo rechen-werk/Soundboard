@@ -1,8 +1,8 @@
 package eu.rechenwerk.soundboard.controller;
 
-import eu.rechenwerk.soundboard.converters.JSONConverter;
-import eu.rechenwerk.soundboard.model.Config;
-import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
+import eu.rechenwerk.soundboard.converters.ConfigConverter;
+import eu.rechenwerk.soundboard.records.Config;
+import eu.rechenwerk.framework.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.Terminal;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import eu.rechenwerk.soundboard.view.MicrophoneCell;
@@ -16,18 +16,16 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import static eu.rechenwerk.soundboard.framework.IO.*;
-
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
 import java.util.List;
 
+import static eu.rechenwerk.soundboard.SoundBoard.PATH_INFO;
+
 public class SoundBoardController {
-	public final static String CONFIG_FILE = "config.json";
-	private String sounds;
-	private List<Color> colors;
+
+	public static Config CONFIG;
 
 	@FXML private TextField soundNameField;
 	@FXML private TextField soundImageField;
@@ -37,23 +35,30 @@ public class SoundBoardController {
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 	@FXML private GridPane soundGridPane;
 
-	public void init(Stage stage) throws FileNotFoundException {
-		Config config = JSONConverter.CONFIG.deserialize(readResource(CONFIG_FILE));
-		sounds = config.sounds();
-		colors = config.colors();
+	public void init(Stage stage) throws OsNotSupportedException, IOException {
+		try(FileInputStream fis = new FileInputStream(PATH_INFO.getConfigFile())) {
+			String configJson = new String(fis.readAllBytes());
+			CONFIG = new ConfigConverter().deserialize(configJson);
+		}
+
 		microphoneListView
 			.getItems()
-			.addAll(
-				config
-					.microphones()
-					.stream()
-					.map(it ->
-						new MicrophoneCell(it, true)
-					).toList()
+			.addAll(CONFIG
+				.microphones()
+				.stream()
+				.map(it ->
+					new MicrophoneCell(it, true)
+				).toList()
 			);
 
 		initAudioBoard();
-		stage.setOnCloseRequest(event -> cleanup());
+		stage.setOnCloseRequest(event -> {
+			try {
+				cleanup();
+			} catch (OsNotSupportedException | IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	@FXML protected void onAddSoundClick() {
@@ -99,27 +104,22 @@ public class SoundBoardController {
 		inputDevicesComboBox.setItems(FXCollections.observableList(devices));
 	}
 
-	private void persist() {
-		try {
-			writeResource(
-				CONFIG_FILE,
-				JSONConverter.CONFIG.serializeIndented(new Config(
-					sounds,
-					microphoneListView
-						.getItems()
-						.stream()
-						.filter(MicrophoneCell::isLocked)
-						.map(MicrophoneCell::getMicrophone)
-						.toList(),
-					colors
-				), 4)
-			);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+	private void persist() throws OsNotSupportedException, IOException {
+		FileWriter fw = new FileWriter(PATH_INFO.getConfigFile());
+		fw.write(new ConfigConverter().serializeIndented(new Config(
+			microphoneListView
+				.getItems()
+				.stream()
+				.filter(MicrophoneCell::persistent)
+				.map(MicrophoneCell::getMicrophone)
+				.toList(),
+			CONFIG.colors()
+		), 4));
+		fw.flush();
+		fw.close();
 	}
 
-	private void cleanup(){
+	private void cleanup() throws OsNotSupportedException, IOException {
 		persist();
 		microphoneListView
 			.getItems()
@@ -128,24 +128,26 @@ public class SoundBoardController {
 			.forEach(VirtualMicrophone::delete);
 	}
 
-	private void initAudioBoard() {
-		if(colors.size() == 0) {
-			colors = List.of(Color.WHITE);
+	private void initAudioBoard() throws OsNotSupportedException {
+		if(CONFIG
+			.colors().size() == 0) {
+			CONFIG = new Config(CONFIG.microphones(), List.of(Color.WHITE));
 		}
 		Color[][] gridColors = new Color[soundGridPane.getRowCount()+1][soundGridPane.getColumnCount()+1];
 
 		for (int row = 0; row < gridColors.length; row++) {
 			for (int col = 0; col < gridColors[row].length; col++) {
-				gridColors[row][col] = colors.get(new Random().nextInt(colors.size()));
+				gridColors[row][col] = CONFIG
+					.colors().get(new Random().nextInt(CONFIG
+						.colors().size()));
 			}
 		}
-		URL soundsDirURL = getClass().getResource(sounds);
-		if(soundsDirURL == null) throw new RuntimeException("Sounds directory could not be found!");
-		File soundsDir = new File(soundsDirURL.getFile());
 		List<File> audios = Arrays
-			.stream(soundsDir.listFiles())
-			.filter(File::isFile)
-			.filter(file-> file.getName().endsWith(".ogg"))
+			.stream(Objects.requireNonNull(
+			PATH_INFO
+			.getSoundsDirectory()
+			.listFiles(File::isFile)))
+			.filter(it -> it.getName().endsWith(".ogg"))
 			.toList();
 
 		int index = 0;
@@ -153,7 +155,9 @@ public class SoundBoardController {
 		for (int row = 0; row < soundGridPane.getRowCount(); row++) {
 			for (int col = 0; col < soundGridPane.getColumnCount(); col++) {
 				soundGridPane.add(new SoundPane(
-					colors.get(new Random().nextInt(colors.size())),
+						CONFIG
+							.colors().get(new Random().nextInt(CONFIG
+								.colors().size())),
 					gridColors[row+1][col],
 					gridColors[row][col+1],
 					gridColors[row+1][col+1],

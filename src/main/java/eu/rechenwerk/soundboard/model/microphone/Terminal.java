@@ -1,12 +1,11 @@
 package eu.rechenwerk.soundboard.model.microphone;
 
-import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
+import eu.rechenwerk.framework.OsNotSupportedException;
 
 import java.io.File;
 import java.util.List;
 
-
-import org.apache.commons.exec.OS;
+import static eu.rechenwerk.framework.OS.*;
 
 public abstract class Terminal {
 	private static Terminal instance;
@@ -21,8 +20,8 @@ public abstract class Terminal {
 	public static Terminal getInstance() throws OsNotSupportedException {
 		if(instance != null) return instance;
 
-		if (OS.isFamilyUnix()) return instance = new LinuxTerminal();
-		if (OS.isFamilyWindows()) return instance = new WindowsTerminal();
+		if (THIS_OS == LINUX) return instance = new LinuxTerminal();
+		if (THIS_OS == WINDOWS) return instance = new WindowsTerminal();
 
 		throw new OsNotSupportedException();
 	}

@@ -13,13 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class SoundPane extends Pane {
-	private final Optional<File> audio;
-	private final List<VirtualMicrophone> microphones;
 	private final VirtualMicrophone selectedMicrophone;
 	public SoundPane(Color tl, Color bl, Color tr, Color br, Optional<File> audio, List<VirtualMicrophone> mircophones) {
-		this.audio = audio;
-		this.microphones = mircophones;
-		selectedMicrophone = microphones.get(0);
+		selectedMicrophone = mircophones.get(0);
 		Image image = audio.isEmpty()
 			? GradientGenerator.generateImage(500,500, tl, bl, tr, br)
 			: GradientGenerator.generateImage("speaker.png", tl, bl, tr, br);

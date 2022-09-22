@@ -12,7 +12,7 @@ import static java.lang.Long.MAX_VALUE;
 
 public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 
-	private boolean isLocked;
+	private boolean persist;
 	private final static String unlocked = "\uD83D\uDD13";
 	private final static String locked = "\uD83D\uDD12";
 	private final VirtualMicrophone microphone;
@@ -21,23 +21,24 @@ public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 	private final Button button;
 
 
-	public MicrophoneCell(VirtualMicrophone microphone, boolean isLocked) {
+	public MicrophoneCell(VirtualMicrophone microphone, boolean persisted) {
 		super();
 		this.microphone = microphone;
-		this.isLocked = isLocked;
+		this.persist = persisted;
 
 		hbox = new HBox();
 		Pane pane = new Pane();
 		label = new Label(microphone.getName());
-		button = new Button(this.isLocked ? locked : unlocked);
+		button = new Button(this.persist
+			? locked : unlocked);
 		hbox.getChildren().addAll(label, pane, button);
 		HBox.setHgrow(pane, Priority.ALWAYS);
 		pane.setMaxSize(MAX_VALUE, USE_PREF_SIZE);
 		button.setOnAction(event ->{
-			button.setText(this.isLocked
+			button.setText(this.persist
 				? unlocked
 				: locked);
-			this.isLocked = !this.isLocked;
+			this.persist = !this.persist;
 		});
 		updateItem(microphone, false);
 	}
@@ -45,8 +46,8 @@ public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 	public VirtualMicrophone getMicrophone() {
 		return microphone;
 	}
-	public boolean isLocked() {
-		return isLocked;
+	public boolean persistent() {
+		return persist;
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package eu.rechenwerk.soundboard.model.microphone;
 
 import java.io.File;
 
-import eu.rechenwerk.soundboard.model.exceptions.OsNotSupportedException;
+import eu.rechenwerk.framework.OsNotSupportedException;
 
 public final class VirtualMicrophone {
 	public static String INPUT = "-INPUT";

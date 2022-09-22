@@ -1,23 +1,18 @@
 package eu.rechenwerk.soundboard.converters;
 
-import eu.rechenwerk.soundboard.model.Config;
+import eu.rechenwerk.soundboard.records.Config;
 import org.json.JSONObject;
 
 public class ConfigConverter extends JSONConverter<Config>{
-
-	private final static String SOUNDS = "sounds";
 	private final static String MICROPHONES = "microphones";
 	private final static String COLORS = "colors";
-
-	ConfigConverter() {}
 
 	@Override
 	public String serialize(Config obj) {
 		return
 			startObject() +
-				putString(SOUNDS, obj.sounds()) + comma() +
-				putArray(MICROPHONES, obj.microphones(), JSONConverter.VIRTUAL_MICROPHONE) + comma() +
-				putArray(COLORS, obj.colors(), JSONConverter.COLOR) +
+				putArray(MICROPHONES, obj.microphones(), new VirtualMicrophoneConverter()) + comma() +
+				putArray(COLORS, obj.colors(), new ColorConverter()) +
 			endObject();
 	}
 
@@ -25,9 +20,8 @@ public class ConfigConverter extends JSONConverter<Config>{
 	public Config deserialize(String json) {
 		JSONObject jsonObject = new JSONObject(json);
 		return new Config(
-			jsonObject.getString(SOUNDS),
-			JSONConverter.VIRTUAL_MICROPHONE_LIST.deserialize(jsonObject.getJSONArray(MICROPHONES).toString()),
-			JSONConverter.COLOR_LIST.deserialize(jsonObject.getJSONArray(COLORS).toString())
+			getArray(jsonObject.getJSONArray(MICROPHONES).toString(), new VirtualMicrophoneConverter()),
+			getArray(jsonObject.getJSONArray(COLORS).toString(), new ColorConverter())
 		);
 	}
 }

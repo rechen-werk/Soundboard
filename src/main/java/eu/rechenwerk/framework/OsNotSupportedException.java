@@ -1,4 +1,4 @@
-package eu.rechenwerk.soundboard.model.exceptions;
+package eu.rechenwerk.framework;
 
 public class OsNotSupportedException extends Exception {
 	public OsNotSupportedException() {
