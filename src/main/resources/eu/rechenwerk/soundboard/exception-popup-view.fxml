@@ -11,29 +11,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eu.rechenwerk.soundboard.controller.ExceptionPopupController">
-   <children>
-      <VBox alignment="TOP_CENTER" layoutX="112.0" layoutY="110.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Label text="Something went wrong." textFill="RED">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <TextArea editable="false" VBox.vgrow="ALWAYS" />
-            <HBox alignment="CENTER_LEFT">
-               <children>
-                  <Button mnemonicParsing="false" onAction="#onReportErrorClick" text="Report Error" />
-                  <Pane HBox.hgrow="ALWAYS" />
-                  <CheckBox fx:id="askAgainCheckbox" mnemonicParsing="false" text="Don't ask me again" />
-               </children>
-            </HBox>
-            <Button mnemonicParsing="false" onAction="#onOpenLogClick" text="Open log" />
-         </children>
-         <padding>
-            <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-         </padding>
-      </VBox>
-   </children>
+   <VBox alignment="TOP_CENTER" layoutX="112.0" layoutY="110.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <padding>
+         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+      </padding>
+      <Label fx:id="titleLabel" text="The Exception" textFill="RED">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="textArea" editable="false" VBox.vgrow="ALWAYS" />
+      <HBox alignment="CENTER_LEFT">
+         <Button mnemonicParsing="false" onAction="#onReportErrorClick" text="Report Error" />
+         <Pane HBox.hgrow="ALWAYS" />
+         <CheckBox fx:id="askAgainCheckbox" mnemonicParsing="false" text="Don't ask me again" />
+      </HBox>
+      <Button mnemonicParsing="false" onAction="#onOpenLogClick" text="Open log" />
+   </VBox>
 </AnchorPane>
