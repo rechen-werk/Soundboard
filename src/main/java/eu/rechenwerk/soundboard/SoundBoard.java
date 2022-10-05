@@ -36,6 +36,7 @@ public class SoundBoard {
 			Path compPath = dataDirectory.resolve(PATH_INFO.compDir());
 			Path appPath = compPath.resolve(PATH_INFO.appDir());
 			Path soundsPath = appPath.resolve(PATH_INFO.soundsDir());
+			Path logsPath = appPath.resolve(PATH_INFO.logsDir());
 			Path configPath = appPath.resolve(PATH_INFO.configFile());
 
 			if (!Files.exists(compPath)) {
@@ -46,6 +47,9 @@ public class SoundBoard {
 			}
 			if (!Files.exists(soundsPath)) {
 				Files.createDirectory(soundsPath);
+			}
+			if (!Files.exists(logsPath)) {
+				Files.createDirectory(logsPath);
 			}
 			if (!Files.exists(configPath)) {
 				Files.createFile(configPath);

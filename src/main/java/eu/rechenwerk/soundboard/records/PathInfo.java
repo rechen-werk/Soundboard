@@ -4,11 +4,13 @@ import eu.rechenwerk.framework.OS;
 import eu.rechenwerk.framework.OsNotSupportedException;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public record PathInfo (
 	String compDir,
 	String appDir,
 	String soundsDir,
+	String logsDir,
 	String configFile
 ) {
 	public File getConfigFile() throws OsNotSupportedException {
@@ -24,5 +26,11 @@ public record PathInfo (
 			.resolve(appDir)
 			.resolve(soundsDir)
 			.toFile();
+	}
+	public Path getLogsDirectory() throws OsNotSupportedException {
+		return OS.getDataDirectory()
+			.resolve(compDir)
+			.resolve(appDir)
+			.resolve(logsDir);
 	}
 }

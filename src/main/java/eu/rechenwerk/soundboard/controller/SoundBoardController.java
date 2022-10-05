@@ -1,5 +1,6 @@
 package eu.rechenwerk.soundboard.controller;
 
+import eu.rechenwerk.framework.Logger;
 import eu.rechenwerk.soundboard.FXSoundBoard;
 import eu.rechenwerk.soundboard.converters.ConfigConverter;
 import eu.rechenwerk.soundboard.records.Config;
@@ -69,7 +70,13 @@ public class SoundBoardController {
 		String audioFileString = soundNameField.getText();
 		String audioImageString = soundImageField.getText();
 
-		openExceptionPopUp(new OsNotSupportedException());
+
+		try {
+			Logger l = new Logger(PATH_INFO.getLogsDirectory(), false);
+			l.error("HI");
+		} catch (IOException | OsNotSupportedException e) {
+			openExceptionPopUp(e);
+		}
 
 	}
 
