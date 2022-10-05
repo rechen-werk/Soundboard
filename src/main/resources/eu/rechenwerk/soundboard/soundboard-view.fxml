@@ -95,7 +95,7 @@
                                        <Insets left="30.0" right="30.0" />
                                     </VBox.margin>
                                  </Button>
-                                 <Button mnemonicParsing="false" text="Open Sounds Folder" />
+                                 <Button mnemonicParsing="false" onAction="#onOpenSoundsFolderClick" text="Open Sounds Folder" />
                               </children>
                            </VBox>
                         </children>

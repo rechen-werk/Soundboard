@@ -73,6 +73,14 @@ public class SoundBoardController {
 
 	}
 
+	public void onOpenSoundsFolderClick() {
+		try {
+			Terminal.getInstance().openFolder(PATH_INFO.getSoundsDirectory());
+		} catch (OsNotSupportedException | IOException e) {
+			openExceptionPopUp(e);
+		}
+	}
+
 	@FXML protected void onCreateMicrophoneClick() {
 		String microphoneName = virtualMicrophoneNameField.getText();
 		if(microphoneName == null || microphoneName.isBlank()) {
