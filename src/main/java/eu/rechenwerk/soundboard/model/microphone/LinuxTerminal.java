@@ -128,6 +128,13 @@ public final class LinuxTerminal extends Terminal {
 		return listDevices("-o");
 	}
 
+	@Override
+	public void openFolder(File folder) throws IOException {
+		Runtime.getRuntime().exec(
+			new String[]{"sh", "-c", "/usr/bin/xdg-open '" + folder + "'"}
+		);
+	}
+
 	private List<String> listDevices(String param) {
 		List<String> devices = new ArrayList<>();
 
