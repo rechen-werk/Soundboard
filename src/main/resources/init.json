@@ -3,6 +3,7 @@
     "COMP_DIR": ".rechenwerk",
     "APP_DIR": "soundboard",
     "SOUNDS_DIR": "sounds",
+    "LOGS_DIR": "logs",
     "CONFIG_FILE": "config.json"
   },
   "CONFIG_CONTENT": {
