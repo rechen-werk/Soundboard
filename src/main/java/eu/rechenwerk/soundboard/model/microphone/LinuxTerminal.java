@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Path;
 import java.util.*;
 
 public final class LinuxTerminal extends Terminal {
@@ -129,7 +130,7 @@ public final class LinuxTerminal extends Terminal {
 	}
 
 	@Override
-	public void openFolder(File folder) throws IOException {
+	public void openFolder(Path folder) throws IOException {
 		Runtime.getRuntime().exec(
 			new String[]{"sh", "-c", "/usr/bin/xdg-open '" + folder + "'"}
 		);

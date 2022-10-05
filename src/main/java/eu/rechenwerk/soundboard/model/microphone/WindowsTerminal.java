@@ -2,6 +2,7 @@ package eu.rechenwerk.soundboard.model.microphone;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 public final class WindowsTerminal extends Terminal {
@@ -37,7 +38,7 @@ public final class WindowsTerminal extends Terminal {
 	}
 
 	@Override
-	public void openFolder(File folder) throws IOException {
+	public void openFolder(Path folder) throws IOException {
 		Runtime.getRuntime().exec(new String[] {"explorer", folder.toString()});
 	}
 }

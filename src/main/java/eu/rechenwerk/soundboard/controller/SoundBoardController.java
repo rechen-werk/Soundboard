@@ -1,32 +1,27 @@
 package eu.rechenwerk.soundboard.controller;
 
-import eu.rechenwerk.framework.Logger;
-import eu.rechenwerk.soundboard.FXSoundBoard;
 import eu.rechenwerk.soundboard.converters.ConfigConverter;
 import eu.rechenwerk.soundboard.records.Config;
-import eu.rechenwerk.framework.OsNotSupportedException;
-import eu.rechenwerk.soundboard.model.microphone.Terminal;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import eu.rechenwerk.soundboard.view.MicrophoneCell;
 import eu.rechenwerk.soundboard.view.SoundPane;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
-import static eu.rechenwerk.soundboard.SoundBoard.PATH_INFO;
+import static eu.rechenwerk.soundboard.SoundBoard.*;
 
 public class SoundBoardController {
 
@@ -48,8 +43,8 @@ public class SoundBoardController {
 		try(FileInputStream fis = new FileInputStream(PATH_INFO.getConfigFile())) {
 			String configJson = new String(fis.readAllBytes());
 			CONFIG = new ConfigConverter().deserialize(configJson);
-		} catch (IOException | OsNotSupportedException e) {
-			openExceptionPopUp(e);
+		} catch (IOException e) {
+			exceptionPopUp(e);
 		}
 
 		microphoneListView
@@ -67,24 +62,33 @@ public class SoundBoardController {
 	}
 
 	@FXML protected void onAddSoundClick() {
-		String audioFileString = soundNameField.getText();
+		String soundNameString = soundNameField.getText();
+		String audioFileString = soundFileField.getText();
 		String audioImageString = soundImageField.getText();
 
-
-		try {
-			Logger l = new Logger(PATH_INFO.getLogsDirectory(), false);
-			l.error("HI");
-		} catch (IOException | OsNotSupportedException e) {
-			openExceptionPopUp(e);
+		Path source = Path.of(audioFileString);
+		LOGGER.debug(source.toString());
+		String fe = "";
+		int i = source.getFileName().toString().lastIndexOf('.');
+		if (i > 0) {
+			fe = source.getFileName().toString().substring(i+1);
 		}
-
+		Path destination = PATH_INFO.getSoundsDirectory().resolve(soundNameString.isBlank() ? source.getFileName().toString() : soundNameString + "." + fe);
+		LOGGER.debug(destination.toString());
+		if(Files.notExists(destination)) {
+			try {
+				Files.copy(source, destination);
+			} catch (IOException e) {
+				exceptionPopUp(e);
+			}
+		}
 	}
 
 	public void onOpenSoundsFolderClick() {
 		try {
-			Terminal.getInstance().openFolder(PATH_INFO.getSoundsDirectory());
-		} catch (OsNotSupportedException | IOException e) {
-			openExceptionPopUp(e);
+			TERMINAL.openFolder(PATH_INFO.getSoundsDirectory());
+		} catch (IOException e) {
+			exceptionPopUp(e);
 		}
 	}
 
@@ -93,18 +97,14 @@ public class SoundBoardController {
 		if(microphoneName == null || microphoneName.isBlank()) {
 			return;
 		}
-		try {
-			microphoneListView
-				.getItems()
-				.add(
-					new MicrophoneCell(VirtualMicrophone.create(
-						microphoneName, inputDevicesComboBox.getSelectionModel().getSelectedItem()
-					),
-					false)
-				);
-		} catch (OsNotSupportedException e) {
-			openExceptionPopUp(e);
-		}
+		microphoneListView
+			.getItems()
+			.add(
+				new MicrophoneCell(VirtualMicrophone.create(
+					microphoneName, inputDevicesComboBox.getSelectionModel().getSelectedItem()
+				),
+				false)
+			);
 	}
 
 	@FXML protected void onChooseImageClick() {
@@ -126,12 +126,8 @@ public class SoundBoardController {
 	}
 
 	@FXML protected void refreshCombobox() {
-		try {
-			List<String> devices = Terminal.getInstance().listOutputDevices();
-			inputDevicesComboBox.setItems(FXCollections.observableList(devices));
-		} catch (OsNotSupportedException e) {
-			openExceptionPopUp(e);
-		}
+		List<String> devices = TERMINAL.listOutputDevices();
+		inputDevicesComboBox.setItems(FXCollections.observableList(devices));
 	}
 
 	private void persist() {
@@ -146,8 +142,8 @@ public class SoundBoardController {
 				CONFIG.colors()
 			), 4));
 			fw.flush();
-		} catch (IOException | OsNotSupportedException e) {
-			openExceptionPopUp(e);
+		} catch (IOException e) {
+			exceptionPopUp(e);
 		}
 	}
 
@@ -175,52 +171,30 @@ public class SoundBoardController {
 			}
 		}
 
-		try {
-			List<File> audios = Arrays
-				.stream(Objects.requireNonNull(
-				PATH_INFO
-				.getSoundsDirectory()
-				.listFiles(File::isFile)))
-				.filter(it -> it.getName().endsWith(".ogg"))
-				.toList();
-			int index = 0;
+		List<File> audios = Arrays
+			.stream(Objects.requireNonNull(
+			PATH_INFO
+			.getSoundsDirectory().toFile()
+			.listFiles(File::isFile)))
+			.filter(it -> it.getName().endsWith(".ogg"))
+			.toList();
+		int index = 0;
 
-			for (int row = 0; row < soundGridPane.getRowCount(); row++) {
-				for (int col = 0; col < soundGridPane.getColumnCount(); col++) {
-					soundGridPane.add(
-						new SoundPane(
-							CONFIG.colors().get(new Random().nextInt(CONFIG.colors().size())),
-							gridColors[row+1][col],
-							gridColors[row][col+1],
-							gridColors[row+1][col+1],
-							index < audios.size()
-								? Optional.of(audios.get(index))
-								: Optional.empty(),
-							microphoneListView.getItems().stream().map(MicrophoneCell::getMicrophone).toList()
-						), col, row);
-					index++;
-				}
+		for (int row = 0; row < soundGridPane.getRowCount(); row++) {
+			for (int col = 0; col < soundGridPane.getColumnCount(); col++) {
+				soundGridPane.add(
+					new SoundPane(
+						CONFIG.colors().get(new Random().nextInt(CONFIG.colors().size())),
+						gridColors[row+1][col],
+						gridColors[row][col+1],
+						gridColors[row+1][col+1],
+						index < audios.size()
+							? Optional.of(audios.get(index))
+							: Optional.empty(),
+						microphoneListView.getItems().stream().map(MicrophoneCell::getMicrophone).toList()
+					), col, row);
+				index++;
 			}
-		} catch (OsNotSupportedException e) {
-			openExceptionPopUp(e);
-		}
-
-
-	}
-
-	private void openExceptionPopUp(Exception e) {
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(FXSoundBoard.class.getResource("exception-popup-view.fxml"));
-			Scene scene = new Scene(fxmlLoader.load(), 400, 500);
-			Stage stage = new Stage();
-			stage.setTitle("Something went wrong.");
-			stage.setScene(scene);
-			stage.initModality(Modality.APPLICATION_MODAL);
-			ExceptionPopupController exceptionPopupController = fxmlLoader.getController();
-			exceptionPopupController.init(e);
-			stage.show();
-		} catch (IOException ex) {
-			throw new RuntimeException("Could not open Exception Window.", ex);
 		}
 	}
 }

@@ -16,7 +16,6 @@ public enum OS {
 		else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) THIS_OS = LINUX;
 		//else if (OS.contains("mac")) THIS_OS = MAC;
 		else THIS_OS = UNSUPPORTED;
-
 	}
 
 	/**

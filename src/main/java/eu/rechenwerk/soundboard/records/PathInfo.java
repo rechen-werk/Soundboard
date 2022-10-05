@@ -1,7 +1,6 @@
 package eu.rechenwerk.soundboard.records;
 
-import eu.rechenwerk.framework.OS;
-import eu.rechenwerk.framework.OsNotSupportedException;
+import eu.rechenwerk.soundboard.SoundBoard;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -13,22 +12,21 @@ public record PathInfo (
 	String logsDir,
 	String configFile
 ) {
-	public File getConfigFile() throws OsNotSupportedException {
-		return OS.getDataDirectory()
+	public File getConfigFile() {
+		return SoundBoard.DATA_DIRECTORY
 			.resolve(compDir)
 			.resolve(appDir)
 			.resolve(configFile)
 			.toFile();
 	}
-	public File getSoundsDirectory() throws OsNotSupportedException {
-		return OS.getDataDirectory()
+	public Path getSoundsDirectory() {
+		return SoundBoard.DATA_DIRECTORY
 			.resolve(compDir)
 			.resolve(appDir)
-			.resolve(soundsDir)
-			.toFile();
+			.resolve(soundsDir);
 	}
-	public Path getLogsDirectory() throws OsNotSupportedException {
-		return OS.getDataDirectory()
+	public Path getLogsDirectory() {
+		return SoundBoard.DATA_DIRECTORY
 			.resolve(compDir)
 			.resolve(appDir)
 			.resolve(logsDir);

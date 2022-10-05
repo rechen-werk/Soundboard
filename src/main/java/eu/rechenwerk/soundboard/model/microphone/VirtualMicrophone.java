@@ -2,7 +2,7 @@ package eu.rechenwerk.soundboard.model.microphone;
 
 import java.io.File;
 
-import eu.rechenwerk.framework.OsNotSupportedException;
+import eu.rechenwerk.soundboard.SoundBoard;
 
 public final class VirtualMicrophone {
 	public static String INPUT = "-INPUT";
@@ -15,19 +15,19 @@ public final class VirtualMicrophone {
 
 	private Process runningSoundProcess;
 
-	private VirtualMicrophone(String name, String other) throws OsNotSupportedException {
+	private VirtualMicrophone(String name, String other) {
 		this.name = name;
 		this.device = other;
 		volume = 100;
-		terminal = Terminal.getInstance();
+		terminal = SoundBoard.TERMINAL;
 		terminal.addMicrophone(this, other);
 	}
 
-	public static VirtualMicrophone create(String name, String other) throws OsNotSupportedException {
+	public static VirtualMicrophone create(String name, String other) {
 		return new VirtualMicrophone(name, other);
 	}
 
-	public static VirtualMicrophone create(String name, String other, int volume) throws OsNotSupportedException {
+	public static VirtualMicrophone create(String name, String other, int volume) {
 		VirtualMicrophone mic = new VirtualMicrophone(name, other);
 		mic.setVolume(volume);
 		return mic;

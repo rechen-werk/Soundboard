@@ -1,6 +1,5 @@
 package eu.rechenwerk.soundboard.converters;
 
-import eu.rechenwerk.framework.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import org.json.JSONObject;
 
@@ -22,14 +21,10 @@ public final class VirtualMicrophoneConverter extends JSONConverter<VirtualMicro
 	@Override
 	public VirtualMicrophone deserialize(String json) {
 		JSONObject jsonObject = new JSONObject(json);
-		try {
-			return VirtualMicrophone.create(
-				jsonObject.getString(NAME),
-				jsonObject.getString(DEVICE),
-				jsonObject.getInt(VOLUME)
-			);
-		} catch (OsNotSupportedException e) {
-			throw new RuntimeException(e);
-		}
+		return VirtualMicrophone.create(
+			jsonObject.getString(NAME),
+			jsonObject.getString(DEVICE),
+			jsonObject.getInt(VOLUME)
+		);
 	}
 }
