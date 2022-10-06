@@ -67,17 +67,24 @@ public class SoundBoardController {
 		String audioImageString = soundImageField.getText();
 
 		Path source = Path.of(audioFileString);
-		LOGGER.debug(source.toString());
 		String fe = "";
 		int i = source.getFileName().toString().lastIndexOf('.');
 		if (i > 0) {
 			fe = source.getFileName().toString().substring(i+1);
 		}
+		Path imageSource = Path.of(audioImageString);
+		String fei = "";
+		i = imageSource.getFileName().toString().lastIndexOf('.');
+		if (i > 0) {
+			fei = imageSource.getFileName().toString().substring(i+1);
+		}
+
 		Path destination = PATH_INFO.getSoundsDirectory().resolve(soundNameString.isBlank() ? source.getFileName().toString() : soundNameString + "." + fe);
-		LOGGER.debug(destination.toString());
+		Path imageDestination = PATH_INFO.getImagesDirectory().resolve(soundNameString.isBlank() ? source.getFileName().toString() : soundNameString + "." + fei);
 		if(Files.notExists(destination)) {
 			try {
 				Files.copy(source, destination);
+				Files.copy(imageSource, imageDestination);
 			} catch (IOException e) {
 				exceptionPopUp(e);
 			}

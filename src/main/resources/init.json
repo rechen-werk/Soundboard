@@ -4,6 +4,7 @@
     "APP_DIR": "soundboard",
     "SOUNDS_DIR": "sounds",
     "LOGS_DIR": "logs",
+    "IMAGES_DIR": "images",
     "CONFIG_FILE": "config.json"
   },
   "CONFIG_CONTENT": {

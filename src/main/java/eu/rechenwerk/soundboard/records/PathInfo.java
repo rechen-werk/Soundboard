@@ -10,6 +10,7 @@ public record PathInfo (
 	String appDir,
 	String soundsDir,
 	String logsDir,
+	String imagesDir,
 	String configFile
 ) {
 	public File getConfigFile() {
@@ -30,5 +31,11 @@ public record PathInfo (
 			.resolve(compDir)
 			.resolve(appDir)
 			.resolve(logsDir);
+	}
+	public Path getImagesDirectory() {
+		return SoundBoard.DATA_DIRECTORY
+			.resolve(compDir)
+			.resolve(appDir)
+			.resolve(imagesDir);
 	}
 }
