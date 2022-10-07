@@ -72,6 +72,9 @@ public class SoundBoardController {
 		if (i > 0) {
 			fe = source.getFileName().toString().substring(i+1);
 		}
+		if (!fe.equals("mp3") && !fe.equals("ogg")) {
+			throw new IllegalArgumentException("Audio File has to be submitted!");
+		}
 		Path imageSource = Path.of(audioImageString);
 		String fei = "";
 		i = imageSource.getFileName().toString().lastIndexOf('.');
@@ -84,10 +87,17 @@ public class SoundBoardController {
 		if(Files.notExists(destination)) {
 			try {
 				Files.copy(source, destination);
-				Files.copy(imageSource, imageDestination);
+				//Files.copy(imageSource, imageDestination);
 			} catch (IOException e) {
 				exceptionPopUp(e);
 			}
+		}
+		TERMINAL.convertToOgg(destination.toFile());
+		try {
+			Thread.sleep(2000);
+			Files.delete(destination);
+		} catch (IOException | InterruptedException e) {
+			exceptionPopUp(e);
 		}
 	}
 

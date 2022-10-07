@@ -10,6 +10,7 @@ module eu.rechenwerk.soundboard.soundboard {
 	exports eu.rechenwerk.soundboard.controller;
 	exports eu.rechenwerk.soundboard.records;
 	exports eu.rechenwerk.framework;
+	exports eu.rechenwerk.soundboard.model.terminal;
 
 	opens eu.rechenwerk.soundboard;
 	opens eu.rechenwerk.soundboard.controller;

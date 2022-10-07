@@ -6,7 +6,7 @@ import eu.rechenwerk.framework.OsNotSupportedException;
 import eu.rechenwerk.soundboard.controller.ExceptionPopupController;
 import eu.rechenwerk.soundboard.converters.ConfigConverter;
 import eu.rechenwerk.soundboard.converters.InitConverter;
-import eu.rechenwerk.soundboard.model.microphone.Terminal;
+import eu.rechenwerk.soundboard.model.terminal.Terminal;
 import eu.rechenwerk.soundboard.records.Init;
 import eu.rechenwerk.soundboard.records.PathInfo;
 import javafx.fxml.FXMLLoader;

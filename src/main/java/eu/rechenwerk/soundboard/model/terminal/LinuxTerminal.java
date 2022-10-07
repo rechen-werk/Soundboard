@@ -1,4 +1,7 @@
-package eu.rechenwerk.soundboard.model.microphone;
+package eu.rechenwerk.soundboard.model.terminal;
+
+import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
+import eu.rechenwerk.soundboard.model.terminal.Terminal;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,7 +27,7 @@ public final class LinuxTerminal extends Terminal {
 	}
 
 	@Override
-	void addMicrophone(VirtualMicrophone microphone, String other) {
+	public void addMicrophone(VirtualMicrophone microphone, String other) {
 		ids.put(microphone, new ArrayList<>());
 
 		String[] commands = new String[]{
@@ -134,6 +137,24 @@ public final class LinuxTerminal extends Terminal {
 		Runtime.getRuntime().exec(
 			new String[]{"sh", "-c", "/usr/bin/xdg-open '" + folder + "'"}
 		);
+	}
+
+	@Override
+	public File convertToOgg(File audio) {
+		String fileName = audio.getName();
+		int pos = fileName.lastIndexOf(".");
+		if (pos > 0 && pos < (fileName.length() - 1)) {
+			fileName = fileName.substring(0, pos) + ".ogg";
+		}
+		try {
+			Runtime.getRuntime().exec(
+				new String[]{"ffmpeg", "-i", audio.getName(), "-c:a", "libvorbis", "-q:a", "4", fileName},
+				null, audio.getParentFile()
+			);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return audio.toPath().getParent().resolve(fileName).toFile();
 	}
 
 	private List<String> listDevices(String param) {

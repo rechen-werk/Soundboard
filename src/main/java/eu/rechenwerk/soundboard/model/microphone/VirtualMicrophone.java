@@ -3,6 +3,7 @@ package eu.rechenwerk.soundboard.model.microphone;
 import java.io.File;
 
 import eu.rechenwerk.soundboard.SoundBoard;
+import eu.rechenwerk.soundboard.model.terminal.Terminal;
 
 public final class VirtualMicrophone {
 	public static String INPUT = "-INPUT";

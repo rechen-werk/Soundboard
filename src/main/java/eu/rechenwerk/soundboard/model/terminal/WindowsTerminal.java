@@ -1,4 +1,7 @@
-package eu.rechenwerk.soundboard.model.microphone;
+package eu.rechenwerk.soundboard.model.terminal;
+
+import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
+import eu.rechenwerk.soundboard.model.terminal.Terminal;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,5 +43,10 @@ public final class WindowsTerminal extends Terminal {
 	@Override
 	public void openFolder(Path folder) throws IOException {
 		Runtime.getRuntime().exec(new String[] {"explorer", folder.toString()});
+	}
+
+	@Override
+	public File convertToOgg(File audio) {
+		return null;
 	}
 }
