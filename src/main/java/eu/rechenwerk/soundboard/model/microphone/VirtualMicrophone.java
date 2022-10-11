@@ -1,8 +1,7 @@
 package eu.rechenwerk.soundboard.model.microphone;
 
-import java.io.File;
-
 import eu.rechenwerk.soundboard.SoundBoard;
+import eu.rechenwerk.soundboard.model.sounds.Sound;
 import eu.rechenwerk.soundboard.model.terminal.Terminal;
 
 public final class VirtualMicrophone {
@@ -34,7 +33,7 @@ public final class VirtualMicrophone {
 		return mic;
 	}
 
-	public void play(File audio) {
+	public void play(Sound audio) {
 		runningSoundProcess = terminal.playSound(this, audio);
 		runningSoundProcess.onExit().thenAccept(p -> {
 			p.destroy();

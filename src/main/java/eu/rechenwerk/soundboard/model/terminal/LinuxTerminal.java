@@ -1,7 +1,8 @@
 package eu.rechenwerk.soundboard.model.terminal;
 
+import eu.rechenwerk.framework.FileExtension;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
-import eu.rechenwerk.soundboard.model.terminal.Terminal;
+import eu.rechenwerk.soundboard.model.sounds.Sound;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,13 +15,13 @@ public final class LinuxTerminal extends Terminal {
 	private final Map<VirtualMicrophone, List<String>> ids = new HashMap<>();
 
 	@Override
-	public Process playSound(VirtualMicrophone microphone, File audio) {
+	public Process playSound(VirtualMicrophone microphone, Sound audio) {
 		try {
 			microphone.stopSound();
 
 			return Runtime
 				.getRuntime()
-				.exec(new String[]{"paplay", audio.getName(), "-d", microphone.getInputName()}, null, audio.getParentFile());
+				.exec(new String[]{"paplay", audio.getSound().getName(), "-d", microphone.getInputName()}, null, audio.getSound().getParentFile());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -141,11 +142,7 @@ public final class LinuxTerminal extends Terminal {
 
 	@Override
 	public File convertToOgg(File audio) {
-		String fileName = audio.getName();
-		int pos = fileName.lastIndexOf(".");
-		if (pos > 0 && pos < (fileName.length() - 1)) {
-			fileName = fileName.substring(0, pos) + ".ogg";
-		}
+		String fileName = FileExtension.getSimpleName(audio) + ".ogg";
 		try {
 			Runtime.getRuntime().exec(
 				new String[]{"ffmpeg", "-i", audio.getName(), "-c:a", "libvorbis", "-q:a", "4", fileName},
@@ -155,6 +152,41 @@ public final class LinuxTerminal extends Terminal {
 			throw new RuntimeException(e);
 		}
 		return audio.toPath().getParent().resolve(fileName).toFile();
+	}
+
+	@Override
+	public double getDuration(File audio) {
+		try {
+			Process process = new ProcessBuilder("/bin/bash").start();
+			try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
+				writer.write("temp=`ffmpeg -i " +
+					audio.getAbsolutePath() +
+					" 2>&1 | grep Duration`; echo ${temp:12:11}")
+				;
+				writer.newLine();
+				writer.write("exit");
+				writer.newLine();
+				writer.flush();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			StringBuilder durationStringBuilder = new StringBuilder();
+			try (Scanner scanner = new Scanner(process.getInputStream())) {
+				while (scanner.hasNextLine()) {
+					durationStringBuilder.append(scanner.nextLine());
+				}
+			}
+
+			String durationString = durationStringBuilder.toString();
+			int hours = Integer.parseInt(durationString.substring(0,2));
+			int minutes = Integer.parseInt(durationString.substring(3,5));
+			int seconds = Integer.parseInt(durationString.substring(6,8));
+			int millis = Integer.parseInt(durationString.substring(9,11)) * 10;
+
+			return hours * 60 * 60 + minutes * 60 + seconds + millis / 1000d;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private List<String> listDevices(String param) {

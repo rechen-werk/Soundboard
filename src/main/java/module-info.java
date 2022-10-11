@@ -7,6 +7,7 @@ module eu.rechenwerk.soundboard.soundboard {
 
 	exports eu.rechenwerk.soundboard;
 	exports eu.rechenwerk.soundboard.model.microphone;
+	exports eu.rechenwerk.soundboard.model.sounds;
 	exports eu.rechenwerk.soundboard.controller;
 	exports eu.rechenwerk.soundboard.records;
 	exports eu.rechenwerk.framework;

@@ -1,7 +1,7 @@
 package eu.rechenwerk.soundboard.model.terminal;
 
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
-import eu.rechenwerk.soundboard.model.terminal.Terminal;
+import eu.rechenwerk.soundboard.model.sounds.Sound;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.List;
 public final class WindowsTerminal extends Terminal {
 
 	@Override
-	public Process playSound(VirtualMicrophone microphone, File audio) {
+	public Process playSound(VirtualMicrophone microphone, Sound audio) {
 		return null;
 	}
 
@@ -48,5 +48,10 @@ public final class WindowsTerminal extends Terminal {
 	@Override
 	public File convertToOgg(File audio) {
 		return null;
+	}
+
+	@Override
+	public double getDuration(File audio) {
+		return 0;
 	}
 }

@@ -74,13 +74,6 @@
                                  </HBox>
                                  <HBox alignment="CENTER_LEFT">
                                     <children>
-                                       <Label alignment="TOP_CENTER" text="Image" />
-                                       <TextField fx:id="soundImageField" HBox.hgrow="ALWAYS" />
-                                       <Button mnemonicParsing="false" onAction="#onChooseImageClick" text="Choose file" />
-                                    </children>
-                                 </HBox>
-                                 <HBox alignment="CENTER_LEFT">
-                                    <children>
                                        <Label text="File">
                                           <padding>
                                              <Insets right="30.0" />

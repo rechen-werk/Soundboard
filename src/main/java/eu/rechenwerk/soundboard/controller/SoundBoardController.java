@@ -1,6 +1,8 @@
 package eu.rechenwerk.soundboard.controller;
 
+import eu.rechenwerk.framework.FileExtension;
 import eu.rechenwerk.soundboard.converters.ConfigConverter;
+import eu.rechenwerk.soundboard.model.sounds.Sound;
 import eu.rechenwerk.soundboard.records.Config;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
 import eu.rechenwerk.soundboard.view.MicrophoneCell;
@@ -14,6 +16,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
@@ -28,7 +31,6 @@ public class SoundBoardController {
 	public static Config CONFIG;
 
 	@FXML private TextField soundNameField;
-	@FXML private TextField soundImageField;
 	@FXML private TextField soundFileField;
 	@FXML private TextField virtualMicrophoneNameField;
 	@FXML private ComboBox<String> inputDevicesComboBox;
@@ -64,35 +66,30 @@ public class SoundBoardController {
 	@FXML protected void onAddSoundClick() {
 		String soundNameString = soundNameField.getText();
 		String audioFileString = soundFileField.getText();
-		String audioImageString = soundImageField.getText();
 
 		Path source = Path.of(audioFileString);
-		String fe = "";
-		int i = source.getFileName().toString().lastIndexOf('.');
-		if (i > 0) {
-			fe = source.getFileName().toString().substring(i+1);
-		}
+
+		String fe = FileExtension.getExtension(source.toFile());
+
 		if (!fe.equals("mp3") && !fe.equals("ogg")) {
-			throw new IllegalArgumentException("Audio File has to be submitted!");
-		}
-		Path imageSource = Path.of(audioImageString);
-		String fei = "";
-		i = imageSource.getFileName().toString().lastIndexOf('.');
-		if (i > 0) {
-			fei = imageSource.getFileName().toString().substring(i+1);
+			exceptionPopUp(new IllegalArgumentException("Audio File has to be submitted!"));
+			return;
 		}
 
 		Path destination = PATH_INFO.getSoundsDirectory().resolve(soundNameString.isBlank() ? source.getFileName().toString() : soundNameString + "." + fe);
-		Path imageDestination = PATH_INFO.getImagesDirectory().resolve(soundNameString.isBlank() ? source.getFileName().toString() : soundNameString + "." + fei);
+
+		if(fe.equals("mp3")) {
+			TERMINAL.convertToOgg(destination.toFile());
+		}
+
 		if(Files.notExists(destination)) {
 			try {
 				Files.copy(source, destination);
-				//Files.copy(imageSource, imageDestination);
 			} catch (IOException e) {
 				exceptionPopUp(e);
 			}
 		}
-		TERMINAL.convertToOgg(destination.toFile());
+
 		try {
 			Thread.sleep(2000);
 			Files.delete(destination);
@@ -122,15 +119,6 @@ public class SoundBoardController {
 				),
 				false)
 			);
-	}
-
-	@FXML protected void onChooseImageClick() {
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Select image file");
-		File audio = fileChooser.showOpenDialog(soundImageField.getScene().getWindow());
-		if(audio != null) {
-			soundImageField.setText(audio.getAbsolutePath());
-		}
 	}
 
 	@FXML protected void onChooseFileClick() {
@@ -188,13 +176,20 @@ public class SoundBoardController {
 			}
 		}
 
-		List<File> audios = Arrays
+		List<Sound> audios = Arrays
 			.stream(Objects.requireNonNull(
 			PATH_INFO
 			.getSoundsDirectory().toFile()
 			.listFiles(File::isFile)))
 			.filter(it -> it.getName().endsWith(".ogg"))
-			.toList();
+			.map(sound -> {
+				try {
+					return new Sound(sound);
+				} catch (UnsupportedAudioFileException | IOException e) {
+					exceptionPopUp(e);
+				}
+				return new Sound();
+			}).toList();
 		int index = 0;
 
 		for (int row = 0; row < soundGridPane.getRowCount(); row++) {
@@ -206,8 +201,8 @@ public class SoundBoardController {
 						gridColors[row][col+1],
 						gridColors[row+1][col+1],
 						index < audios.size()
-							? Optional.of(audios.get(index))
-							: Optional.empty(),
+							? audios.get(index)
+							: null,
 						microphoneListView.getItems().stream().map(MicrophoneCell::getMicrophone).toList()
 					), col, row);
 				index++;

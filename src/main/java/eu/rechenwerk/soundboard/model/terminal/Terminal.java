@@ -2,6 +2,7 @@ package eu.rechenwerk.soundboard.model.terminal;
 
 import eu.rechenwerk.framework.OsNotSupportedException;
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
+import eu.rechenwerk.soundboard.model.sounds.Sound;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import static eu.rechenwerk.framework.OS.*;
 public abstract class Terminal {
 	private static Terminal instance;
 
-	public abstract Process playSound(VirtualMicrophone microphone, File audio);
+	public abstract Process playSound(VirtualMicrophone microphone, Sound audio);
 	public abstract void addMicrophone(VirtualMicrophone microphone, String other);
 	public abstract void removeMicrophone(VirtualMicrophone microphone);
 	public abstract void setVolume(int volume, VirtualMicrophone microphone);
@@ -21,6 +22,7 @@ public abstract class Terminal {
 	public abstract List<String> listOutputDevices();
 	public abstract void openFolder(Path folder) throws IOException;
 	public abstract File convertToOgg(File audio);
+	public abstract double getDuration(File audio);
 
 	public static Terminal getInstance() throws OsNotSupportedException {
 		if(instance != null) return instance;
