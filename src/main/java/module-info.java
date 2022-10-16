@@ -1,5 +1,4 @@
 module eu.rechenwerk.soundboard.soundboard {
-	//requires javafx.controls;
 	requires javafx.fxml;
 	requires javafx.web;
 	requires org.json;
