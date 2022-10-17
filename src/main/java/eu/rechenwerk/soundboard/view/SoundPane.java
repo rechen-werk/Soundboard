@@ -18,10 +18,7 @@ public class SoundPane extends Pane {
 	public SoundPane(Color tl, Color bl, Color tr, Color br, Sound sound, List<VirtualMicrophone> microphones) {
 		selectedMicrophone = microphones.get(0);
 
-		Image[] images = new Image[3];
-		images[0] = GradientGenerator.generateImage(500,500, tl, bl, tr, br);
-		images[1] = GradientGenerator.generateImage("speaker.png", tl, bl, tr, br);
-		images[2] = GradientGenerator.generateImage("play.png", tl, bl, tr, br);
+		Image[] images = GradientGenerator.generateImages(tl, bl, tr, br, "speaker.png", "play.png");
 
 		Image image;
 		if(sound != null) {
