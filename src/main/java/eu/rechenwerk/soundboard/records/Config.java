@@ -7,5 +7,6 @@ import java.util.List;
 
 public record Config(
 	List<VirtualMicrophone> microphones,
+	VirtualMicrophone selected,
 	List<Color> colors
 ){}

@@ -9,6 +9,7 @@
   },
   "CONFIG_CONTENT": {
     "microphones": [],
+    "selected": "",
     "colors": [
       {"code": "ff0000ff"},
       {"code": "ffff0000"},

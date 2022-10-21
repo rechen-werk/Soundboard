@@ -1,9 +1,7 @@
 package eu.rechenwerk.soundboard.view;
 
 import eu.rechenwerk.soundboard.model.microphone.VirtualMicrophone;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -17,28 +15,28 @@ public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 	private final static String locked = "\uD83D\uDD12";
 	private final VirtualMicrophone microphone;
 	private final HBox hbox;
-	private final Label label;
 	private final Button button;
+	private final RadioButton radioButton;
 
 
-	public MicrophoneCell(VirtualMicrophone microphone, boolean persisted) {
+	public MicrophoneCell(VirtualMicrophone microphone, boolean persisted, ToggleGroup group) {
 		super();
 		this.microphone = microphone;
 		this.persist = persisted;
 
 		hbox = new HBox();
 		Pane pane = new Pane();
-		label = new Label(microphone.getName());
-		button = new Button(this.persist
-			? locked : unlocked);
-		hbox.getChildren().addAll(label, pane, button);
+		pane.setPrefWidth(20);
+		button = new Button(this.persist ? locked : unlocked);
+		radioButton = new RadioButton(microphone.getName());
+		radioButton.setToggleGroup(group);
+		radioButton.setUserData(microphone);
+		hbox.getChildren().addAll(button, pane, radioButton);
 		HBox.setHgrow(pane, Priority.ALWAYS);
 		pane.setMaxSize(MAX_VALUE, USE_PREF_SIZE);
 		button.setOnAction(event ->{
-			button.setText(this.persist
-				? unlocked
-				: locked);
-			this.persist = !this.persist;
+			button.setText(persist ? unlocked : locked);
+			persist = !persist;
 		});
 		updateItem(microphone, false);
 	}
@@ -46,6 +44,11 @@ public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 	public VirtualMicrophone getMicrophone() {
 		return microphone;
 	}
+
+	public RadioButton getRadioButton() {
+		return radioButton;
+	}
+
 	public boolean persistent() {
 		return persist;
 	}
@@ -57,7 +60,7 @@ public class MicrophoneCell extends ListCell<VirtualMicrophone> {
 		if (empty) {
 			setGraphic(null);
 		} else {
-			label.setText(item!=null ? item.getName() : "<null>");
+			radioButton.setText(item!=null ? item.getName() : "<null>");
 			setGraphic(hbox);
 		}
 	}

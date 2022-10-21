@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -37,6 +38,8 @@ public class SoundBoardController {
 	@FXML private ListView<MicrophoneCell> microphoneListView;
 	@FXML private GridPane soundGridPane;
 
+	private final ToggleGroup microphoneSelection = new ToggleGroup();
+
 	/**
 	 * Initialize the SoundBoard window
 	 * @param stage The Stage from the start method
@@ -55,9 +58,15 @@ public class SoundBoardController {
 				.microphones()
 				.stream()
 				.map(it ->
-					new MicrophoneCell(it, true)
+					new MicrophoneCell(it, true, microphoneSelection)
 				).toList()
 			);
+		microphoneListView
+			.getItems()
+			.stream()
+			.filter(it -> it.getMicrophone().equals(CONFIG.selected()))
+			.findFirst()
+			.ifPresent(it -> microphoneSelection.selectToggle(it.getRadioButton()));
 
 		initAudioBoard();
 		stage.setOnCloseRequest(event -> cleanup());
@@ -117,7 +126,7 @@ public class SoundBoardController {
 				new MicrophoneCell(VirtualMicrophone.create(
 					microphoneName, inputDevicesComboBox.getSelectionModel().getSelectedItem()
 				),
-				false)
+				false, microphoneSelection)
 			);
 	}
 
@@ -144,6 +153,7 @@ public class SoundBoardController {
 					.filter(MicrophoneCell::persistent)
 					.map(MicrophoneCell::getMicrophone)
 					.toList(),
+				(VirtualMicrophone) (microphoneSelection.getSelectedToggle() != null ? microphoneSelection.getSelectedToggle().getUserData() : null),
 				CONFIG.colors()
 			), 4));
 			fw.flush();
@@ -164,7 +174,7 @@ public class SoundBoardController {
 	private void initAudioBoard() {
 		if(CONFIG
 			.colors().size() == 0) {
-			CONFIG = new Config(CONFIG.microphones(), List.of(Color.WHITE));
+			CONFIG = new Config(CONFIG.microphones(), CONFIG.selected(), List.of(Color.WHITE));
 		}
 		Color[][] gridColors = new Color[soundGridPane.getRowCount()+1][soundGridPane.getColumnCount()+1];
 
@@ -200,10 +210,8 @@ public class SoundBoardController {
 						gridColors[row+1][col],
 						gridColors[row][col+1],
 						gridColors[row+1][col+1],
-						index < audios.size()
-							? audios.get(index)
-							: null,
-						microphoneListView.getItems().stream().map(MicrophoneCell::getMicrophone).toList()
+						index < audios.size() ? audios.get(index) : null,
+						microphoneSelection
 					), col, row);
 				index++;
 			}

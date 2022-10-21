@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class GradientGenerator {
 	/**
-	 * Generates a Image with a gradient between the corners.
+	 * Generates an Image with a gradient between the corners.
 	 * @param width The width of the image
 	 * @param height The height of the image
 	 * @param c0 The color in the top left corner
@@ -27,40 +27,13 @@ public class GradientGenerator {
 	}
 
 	/**
-	 * Generates a gradient image overlayed with another image.
-	 * @param resourceName name of the resource with the image
-	 * @param c0 The color in the top left corner
-	 * @param c1 The color in the bottom left corner
-	 * @param c2 The color in the top right corner
-	 * @param c3 The color in the bottom right corner
-	 * @return The image with gradient overlayed with the image
-	 */
-	public static Image generateImage(String resourceName, Color c0, Color c1, Color c2, Color c3){
-		BufferedImage speaker;
-		try {
-			URL url = GradientGenerator.class.getClassLoader().getResource(resourceName);
-			if(url == null) {
-				speaker = new BufferedImage(500,500, BufferedImage.TYPE_INT_ARGB);
-			} else {
-				speaker = ImageIO.read(url);
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		BufferedImage image = createGradient(speaker.getWidth(),speaker.getHeight(),c0,c1,c2,c3);
-		image.getGraphics().drawImage(speaker, 0,0, null);
-
-		return convertToFxImage(image);
-	}
-
-	/**
 	 * Returns an Array with Images that contains an empty gradient image at pos 0 and the rest is sorted like resources
 	 * The images are fixed with size 500x500... might make this class better at some point.
 	 * @param c0 The color in the top left corner
 	 * @param c1 The color in the bottom left corner
 	 * @param c2 The color in the top right corner
 	 * @param c3 The color in the bottom right corner
-	 * @param resources Images in the program resources which will be overlayes
+	 * @param resources Images in the program resources which will be overlays
 	 * @return Image[] with gradient images
 	 */
 	public static Image[] generateImages(Color c0, Color c1, Color c2, Color c3, String... resources) {
@@ -94,9 +67,9 @@ public class GradientGenerator {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				double w1 = x/w;
-				double w0 = 1.-w1;
+				double w0 = 1-w1;
 				double h1 = y/h;
-				double h0 = 1.-h1;
+				double h0 = 1-h1;
 
 				int r = (int) (c0.getRed() * (w0*h0) + c1.getRed() * (w0*h1) + c2.getRed() * (w1*h0) + c3.getRed() * (w1*h1));
 				int g = (int) (c0.getGreen() * (w0*h0) + c1.getGreen() * (w0*h1) + c2.getGreen() * (w1*h0) + c3.getGreen() * (w1*h1));
