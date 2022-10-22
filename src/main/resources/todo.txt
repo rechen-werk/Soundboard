@@ -1,0 +1,7 @@
+Add windows compatability
+Add Volume Slider
+Add Button to hear the sounds yourself
+
+Comment code
+Remove Json Dependency
+Add Tests
