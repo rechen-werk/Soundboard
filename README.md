@@ -9,7 +9,7 @@ Runs with JavaFX wich must not be installed but the dependencies are in the jar 
 
 ### Location
 
-For Unix based operating systems the location is `~/home/{user}/.rechenwerk/soundboard/sounds`.
+For Unix based operating systems the location is `~/.rechenwerk/soundboard/sounds`.
 
 `RootDrive:\User\{user}\AppData\Roaming\.rechenwerk\soundboard\sounds` is the corresponding folder on Windows operating systems.
 
